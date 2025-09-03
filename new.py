@@ -10,12 +10,7 @@ gmaps = googlemaps.Client(key=st.secrets['gmapsapi'])
 
 coords = streamlit_js_eval(js_expressions="navigator.geolocation.getCurrentPosition", key="get_position")
 
-if coords and "coords" in coords:
-    lat = coords["coords"]["latitude"]
-    lon = coords["coords"]["longitude"]
-    st.success(f"Latitude: {lat}, Longitude: {lon}")
-else:
-    st.info("Requesting location permission...")
+st.write(coords)
 
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 
