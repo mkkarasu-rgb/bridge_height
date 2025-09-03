@@ -4,23 +4,18 @@ import googlemaps
 import folium
 from geopy.distance import geodesic
 import json
+from streamlit_js_eval import streamlit_js_eval
 
-# import gspread # To read data from Google Sheets
-
-# You would get your API keys from st.secrets
 gmaps = googlemaps.Client(key=st.secrets['gmapsapi'])
 
-# Get device location using Streamlit's experimental geolocation feature
-location_data = st.query_params.get("geolocation")
-if location_data:
-    try:
-        device_location = json.loads(location_data[0])
-        st.info(f"Device location: {device_location['latitude']}, {device_location['longitude']}")
-    except Exception:
-        device_location = st.error("Could not parse device location")
-else:
-    device_location = st.error("Device location not available")
+coords = streamlit_js_eval(js_expressions="navigator.geolocation.getCurrentPosition", key="get_position")
 
+if coords and "coords" in coords:
+    lat = coords["coords"]["latitude"]
+    lon = coords["coords"]["longitude"]
+    st.success(f"Latitude: {lat}, Longitude: {lon}")
+else:
+    st.info("Requesting location permission...")
 
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 
