@@ -25,6 +25,8 @@ location = st_javascript("""
     }
 """)
 
+st.write(location)
+
 # Display the results
 if location:
     if isinstance(location, dict) and "latitude" in location:
