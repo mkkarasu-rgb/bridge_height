@@ -4,14 +4,35 @@ import googlemaps
 import folium
 from geopy.distance import geodesic
 import json
-from streamlit_js_eval import streamlit_js_eval
+from streamlit_javascript import st_javascript
+
+# Run JavaScript to get the location
+location = st_javascript("""
+    () => {
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    resolve({
+                        latitude: pos.coords.latitude,
+                        longitude: pos.coords.longitude
+                    });
+                },
+                (err) => {
+                    reject(err.message);
+                }
+            );
+        });
+    }
+""")
+
+# Display the results
+if location:
+    if isinstance(location, dict) and "latitude" in location:
+        st.success(f"Latitude: {location['latitude']}, Longitude: {location['longitude']}")
+    else:
+        st.error(f"Error getting location: {location}")
 
 gmaps = googlemaps.Client(key=st.secrets['gmapsapi'])
-
-coords = streamlit_js_eval(js_expressions="navigator.geolocation.getCurrentPosition", key="get_position")
-
-st.write(coords)
-
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 
 address = st.text_input("Enter an address:")
