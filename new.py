@@ -8,7 +8,7 @@ import json
 # import gspread # To read data from Google Sheets
 
 # You would get your API keys from st.secrets
-gmaps = googlemaps.Client(key='AIzaSyCw6dw7UN52WgKsXZO3Cevx_ymoa8PPd2w')
+gmaps = googlemaps.Client(key=st.secrets('gmapsapi')
 
 # Get device location using Streamlit's experimental geolocation feature
 location_data = st.query_params.get("geolocation")
