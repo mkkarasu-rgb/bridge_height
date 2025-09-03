@@ -4,80 +4,83 @@ import googlemaps
 import folium
 from geopy.distance import geodesic
 import json
-from streamlit_javascript import st_javascript
+from streamlit_js_eval import get_geolocation
+from streamlit_folium import st_folium
 
-# Run JavaScript to get the location
-location = st_javascript("""
-    () => {
-        return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    resolve({
-                        latitude: pos.coords.latitude,
-                        longitude: pos.coords.longitude
-                    });
-                },
-                (err) => {
-                    reject(err.message);
-                }
-            );
-        });
-    }
-""")
-
-st.write(location)
-
-# Display the results
-if location:
-    if isinstance(location, dict) and "latitude" in location:
-        st.success(f"Latitude: {location['latitude']}, Longitude: {location['longitude']}")
-    else:
-        st.error(f"Error getting location: {location}")
-
-gmaps = googlemaps.Client(key=st.secrets['gmapsapi'])
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
+gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
-address = st.text_input("Enter an address:")
 
-if address:
-    geocode_result = gmaps.geocode(address)
-    if geocode_result:
-        location = geocode_result[0]['geometry']['location']
-        lat, lng = location['lat'], location['lng']
+page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists"])
 
-        st.success(f"Location found: {lat}, {lng}")
+if page=="New Obstacle":
 
-        m = folium.Map(location=[lat, lng], zoom_start=16)
-        folium.Marker([lat, lng], popup=address).add_to(m)
-        st.components.v1.html(m._repr_html_(), height=500)
+    selected_method= st.selectbox("Choose location method:", ["Current Location", "Enter Address or Coordinates"])
 
-        bridge_height = st.number_input("Enter bridge height (meters):", min_value=0.0, step=0.1)
+    if selected_method == "Current Location":
+        location = get_geolocation()
+        if location and "coords" in location:
+            coords = location["coords"]
+            lat = coords.get("latitude")
+            lon = coords.get("longitude")
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            folium.Marker([lat, lon], popup="Current Location").add_to(m)
+            st.components.v1.html(m._repr_html_(), height=300)
+        else:
+            st.error("Could not get current location. Please allow location access.")
 
-        if bridge_height:
-            if st.button("Save Bridge Info"):
-                bridge_info = {
-                    "name": address,
-                    "latitude": lat,
-                    "longitude": lng,
-                    "height": bridge_height
-                }
-                # Save bridge_info to a CSV file
-                df = pd.DataFrame([bridge_info])
-                csv_file = "bridge_info.csv"
+    elif selected_method == "Enter Address or Coordinates":
+
+        address = st.text_input("Enter an address:")
+
+        if address:
+            geocode_result = gmaps.geocode(address)
+            if geocode_result:
+                location = geocode_result[0]['geometry']['location']
+                lat, lon = location['lat'], location['lng']
+                m = folium.Map(location=[lat, lon], zoom_start=15)
+                folium.Marker([lat, lon], popup=address).add_to(m)
+                st.components.v1.html(m._repr_html_(), height=300)
+
+    col1, col2 = st.columns(2)
+    col1.text_input("Enter obstacle name:", key="obstacle_name")
+    col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
+
+    if st.button("Save Obstacle Info"):
+        obstacle_name = st.session_state.get("obstacle_name", "")
+        obstacle_height = st.session_state.get("obstacle_height", "")
+        if not obstacle_name or not obstacle_height or not lat or not lon:
+            st.error("Please provide all fields and ensure location is set.")
+        else:
+            try:
+                obstacle_height = float(obstacle_height)
+                df = pd.DataFrame([{
+                    "Obstacle Name": obstacle_name,
+                    "Height (m)": obstacle_height,
+                    "Latitude": lat,
+                    "Longitude": lon
+                }])
+                csv_path = "bridge_info.csv"
                 try:
-                    # If file exists, append without header
-                    df.to_csv(csv_file, mode='a', header=not pd.io.common.file_exists(csv_file), index=False)
-                except Exception as e:
-                    st.error(f"Error saving to CSV: {e}")
-                else:
-                    st.success("Bridge info saved")
-                # You can add code here to save bridge_info to a file or database
-    else:
-        st.error("Address not found. Please try again.")
-    
-# Load existing bridge data from CSV
-try:
-    bridge_data = pd.read_csv("bridge_info.csv")
-    st.dataframe(bridge_data)
-except FileNotFoundError:
-    bridge_data = pd.DataFrame(columns=["name", "latitude", "longitude", "height"])
+                    existing = pd.read_csv(csv_path)
+                    df = pd.concat([existing, df], ignore_index=True)
+                except FileNotFoundError:
+                    pass
+                df.to_csv(csv_path, index=False)
+                st.success("Obstacle info saved to bridge_info.csv")
+            except ValueError:
+                st.error("Height must be a number.")
+
+elif page=="Obstacle Lists":
+    csv_path = "bridge_info.csv"
+    try:
+        df = pd.read_csv(csv_path)
+    except FileNotFoundError:
+        st.warning("No obstacles found. Add a new obstacle first.")
+        df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+
+    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+
+    if st.button("Save Changes"):
+        edited_df.to_csv(csv_path, index=False)
+        st.success("Changes saved to bridge_info.csv")
