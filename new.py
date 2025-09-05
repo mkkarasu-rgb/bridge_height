@@ -124,7 +124,7 @@ elif page=="Route Planner":
     else:
         # try:
         vehicle_height = float(vehicle_height)
-        directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=True, optimize_waypoints=True)
+        directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=False, optimize_waypoints=True)
         if not directions_result:
             st.error("Could not find a route. Please check the addresses.")
         else:
@@ -158,7 +158,7 @@ elif page=="Route Planner":
 
 # Visualize Route and Obstacles
 if del_from and del_to:
-    directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=True, optimize_waypoints=True)
+    directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=False, optimize_waypoints=True)
     if directions_result:
         route_points = []
         steps = directions_result[0]['legs'][0]['steps']
