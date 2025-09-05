@@ -23,9 +23,9 @@ page = st.selectbox(
 if page == "New Obstacle":
 
     with st.expander("Location Method", expanded=True):
-        selected_method= st.radio("Choose from:", ["Select on Map", "Enter Address or Coordinates"])
+        selected_method= st.radio("Choose from:", ["Current Location", "Enter Address or Coordinates"])
 
-    if selected_method == "Select on Map":
+    if selected_method == "Current Location":
 
         with st.expander("Enter Name, Height and Click on the Map", expanded=True):
             col1, col2 = st.columns(2)
