@@ -25,8 +25,8 @@ if page=="New Obstacle":
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
         lon = coords.get("longitude")
-        m = folium.Map(location=[lat,lon], zoom_start=15)
         if lat is not None and lon is not None:
+            m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="You are here", icon=folium.Icon(color="blue")).add_to(m) 
         m.add_child(folium.LatLngPopup())
         map_data = st_folium(m, height=300, width=700)
