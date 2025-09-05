@@ -127,7 +127,7 @@ elif page=="Obstacle Lists":
 
     edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
 
-    if st.button("Save Changes"):
+    if st.button("Save Changes", type="primary"):
         edited_df.to_csv(csv_path, index=False)
         st.toast("Changes SAVED!", icon="✅")
 
