@@ -23,31 +23,6 @@ page = st.selectbox(
 if page == "New Obstacle":
 
     with st.expander("Location Method", expanded=True):
-        selected_method= st.radio("Choose from:", ["Current Location", "Enter Address or Coordinates"])
-
-    if selected_method == "Current Location":
-
-        with st.expander("Enter Name, Height and Click on the Map", expanded=True):
-            col1, col2 = st.columns(2)
-            col1.text_input("Enter obstacle name:", key="obstacle_name")
-            col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
-        
-            location = get_geolocation()
-            coords = location["coords"] if location and "coords" in location else {}
-            lat = coords.get("latitude")
-            lon = coords.get("longitude")
-            if lat is not None and lon is not None:
-                m = folium.Map(location=[lat, lon], zoom_start=12)
-                folium.Marker([lat, lon], popup="You are here", icon=folium.Icon(color="blue")).add_to(m) 
-            m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=500, width=800)
-            if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
-                lat = map_data["last_clicked"]["lat"]
-                lon = map_data["last_clicked"]["lng"]
-            else:
-                lat, lon = None, None
-
-    elif selected_method == "Enter Address or Coordinates":
 
         address = st.text_input("Enter an address:")
         col1, col2 = st.columns(2)
