@@ -19,15 +19,12 @@ page = st.selectbox(
     index=["New Obstacle", "Obstacle Lists", "Route Planner"].index(page),
     key="main_menu"
 )
+
 if page == "New Obstacle":
 
-    st.write("-----------------------------------------------")
     selected_method= st.radio("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
-
-        st.info("Click on the map to select the obstacle location.")
-        
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
@@ -42,7 +39,7 @@ if page == "New Obstacle":
             lon = map_data["last_clicked"]["lng"]
         else:
             lat, lon = None, None
-        
+            
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
