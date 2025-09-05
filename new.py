@@ -22,7 +22,7 @@ page = st.selectbox(
 
 if page == "New Obstacle":
 
-    with st.form("consent_form"):
+    with st.expander("Instructions", expanded=True):
         selected_method= st.radio("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
