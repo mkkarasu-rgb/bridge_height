@@ -101,7 +101,7 @@ elif page=="Obstacle Lists":
 
     # Display Obstacles on the Map
     if not df.empty:
-        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=5)
+        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=7)
         for _, obstacle in df.iterrows():
             folium.Marker(
                 [obstacle["Latitude"], obstacle["Longitude"]],
