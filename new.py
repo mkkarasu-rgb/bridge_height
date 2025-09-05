@@ -24,7 +24,7 @@ if page == "New Obstacle":
 
     with st.expander("Add new obstacle", expanded=True):
 
-        address = st.text_input("Enter an address:")
+        address = st.text_input("Enter an address:", placeholder="If left blank, your current location will be used")
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
