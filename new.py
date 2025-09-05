@@ -85,7 +85,7 @@ if page == "New Obstacle":
             st.session_state["obstacle_name"] = ""
             st.session_state["obstacle_height"] = ""
             st.session_state["address"] = ""
-            st.rerun()
+            st.expermental.rerun()
 
 elif page=="Obstacle Lists":
 
