@@ -73,7 +73,7 @@ if page == "New Obstacle":
             # Show only the last clicked marker
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Selected Location").add_to(m)
-            st_folium(m, height=500, width=800)
+            # st_folium(m, height=500, width=800)
 
     col1,col2,col3 = st.columns(3)
     if col2.button("Save Obstacle", type="primary"):
