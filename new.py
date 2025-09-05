@@ -142,7 +142,7 @@ elif page=="Route Planner":
                     obstacle_loc = (obstacle['Latitude'], obstacle['Longitude'])
                     dist_to_start = geodesic(start_loc, obstacle_loc).meters
                     dist_to_end = geodesic(end_loc, obstacle_loc).meters
-                    if dist_to_start < 150 or dist_to_end < 150:  # within 100 meters of start or end of step
+                    if dist_to_start < 150 or dist_to_end < 150:  # within 150 meters of start or end of step
                         if obstacle['Height (m)'] < vehicle_height:
                             warning = f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height {obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) near step: {step['html_instructions']}"
                             obstacle_warnings.append(warning)
