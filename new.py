@@ -22,7 +22,7 @@ if page=="New Obstacle":
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
-        
+
         location = get_geolocation()
         if location and "coords" in location:
             coords = location["coords"]
@@ -35,6 +35,11 @@ if page=="New Obstacle":
             st.error("Could not get current location. Please allow location access.")
 
     elif selected_method == "Select on Map":
+
+        col1, col2 = st.columns(2)
+        col1.text_input("Enter obstacle name:", key="obstacle_name")
+        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
+    
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
