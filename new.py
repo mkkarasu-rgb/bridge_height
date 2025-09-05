@@ -20,19 +20,7 @@ if page=="New Obstacle":
     if selected_method == "Select on Map":
 
         st.caption("Click on the map to select the obstacle location.")
-        st.markdown(
-            """
-            <style>
-            .block-container .stCaption {
-                margin-bottom: 0 !important;
-            }
-            .block-container .folium-map {
-                margin-top: 0 !important;
-            }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+        
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
