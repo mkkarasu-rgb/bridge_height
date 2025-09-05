@@ -27,7 +27,7 @@ if page == "New Obstacle":
 
     if selected_method == "Select on Map":
 
-        with st.expander("Instructions", expanded=False):
+        with st.expander("Enter Obstacle Name, Height and Click the location on the Map", expanded=True):
             col1, col2 = st.columns(2)
             col1.text_input("Enter obstacle name:", key="obstacle_name")
             col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
