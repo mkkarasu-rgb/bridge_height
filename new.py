@@ -11,12 +11,14 @@ st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
 
+page = "New Obstacle"
+
 col1, col2, col3 = st.columns(3)
 if col1.button("New Obstacle", key="new_obstacle", help="Add a new obstacle", type="primary"):
     page = "New Obstacle"
-if col2.button("Obstacle Lists"):
+if col2.button("Obstacle Lists", key="obstacle_lists", help="View and edit obstacle list", type="primary"):
     page = "Obstacle Lists"
-if col3.button("Route Planner"):
+if col3.button("Route Planner", key="route_planner", help="Plan a route avoiding low obstacles", type="primary"):
     page = "Route Planner"
 if page=="New Obstacle":
 
