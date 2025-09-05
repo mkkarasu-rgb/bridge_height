@@ -7,7 +7,7 @@ import json
 from streamlit_js_eval import get_geolocation
 from streamlit_folium import st_folium
 
-st.set_page_config(page_title="Bridge Height Checker", layout="centered")
+st.set_page_config(page_title="Bridge Height Checker", layout="centered", page_icon="🚛")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
 
@@ -66,7 +66,7 @@ if page == "New Obstacle":
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
-                st.toast("Please provide all fields and ensure location is set.", icon="⚠️")
+                st.toast("Please provide all fields and ensure location is set.", icon="❌")
             else:
                 try:
                     obstacle_height = float(obstacle_height)
@@ -167,7 +167,7 @@ elif page=="Route Planner":
                                     )
                                     obstacle_warnings.append(warning)
                     if obstacle_warnings:
-                        st.toast("Height obstacles detected on your route",icon="⚠️")
+                        st.toast("Height obstacles detected on your route",icon="❌")
                         # for warning in obstacle_warnings:
                         #     st.error(warning)
                     else:
