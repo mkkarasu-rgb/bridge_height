@@ -40,6 +40,8 @@ if page == "New Obstacle":
             coords = location["coords"] if location and "coords" in location else {}
             lat = coords.get("latitude")
             lon = coords.get("longitude")
+            if lat is not None and lon is not None:
+                address = "You are here"
         m = None
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
