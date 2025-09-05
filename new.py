@@ -67,7 +67,7 @@ if page=="New Obstacle":
                 except FileNotFoundError:
                     pass
                 df.to_csv(csv_path, index=False)
-                st.toast("Obstacle info saved successfully!")
+                st.toast("Obstacle Saved!")
             except ValueError:
                 st.error("Height must be a number.")
 
@@ -83,4 +83,4 @@ elif page=="Obstacle Lists":
 
     if st.button("Save Changes"):
         edited_df.to_csv(csv_path, index=False)
-        st.toast("Changes saved successfully!")
+        st.toast("Changes SAVED!")
