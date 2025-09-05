@@ -15,31 +15,10 @@ page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists", "Route Planne
 
 if page=="New Obstacle":
 
-    selected_method= st.selectbox("Choose location method:", ["Current Location", "Select on Map", "Enter Address or Coordinates"])
+    selected_method= st.selectbox("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
 
-    if selected_method == "Current Location":
+    if selected_method == "Select on Map":
 
-        col1, col2 = st.columns(2)
-        col1.text_input("Enter obstacle name:", key="obstacle_name")
-        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
-
-        location = get_geolocation()
-        if location and "coords" in location:
-            coords = location["coords"]
-            lat = coords.get("latitude")
-            lon = coords.get("longitude")
-            m = folium.Map(location=[lat, lon], zoom_start=15)
-            folium.Marker([lat, lon], popup="Current Location").add_to(m)
-            st.components.v1.html(m._repr_html_(), height=300)
-        else:
-            st.error("Could not get current location. Please allow location access.")
-
-    elif selected_method == "Select on Map":
-
-        col1, col2 = st.columns(2)
-        col1.text_input("Enter obstacle name:", key="obstacle_name")
-        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
-    
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
@@ -54,6 +33,10 @@ if page=="New Obstacle":
             lon = map_data["last_clicked"]["lng"]
         else:
             lat, lon = None, None
+        
+        col1, col2 = st.columns(2)
+        col1.text_input("Enter obstacle name:", key="obstacle_name")
+        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
 
     elif selected_method == "Enter Address or Coordinates":
 
