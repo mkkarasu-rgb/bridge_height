@@ -100,3 +100,15 @@ elif page=="Obstacle Lists":
     if st.button("Save Changes"):
         edited_df.to_csv(csv_path, index=False)
         st.toast("Changes SAVED!", icon="✅")
+
+# Display map with obstacles
+    if not df.empty:
+        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()], zoom_start=12)
+        for _, row in df.iterrows():
+            folium.Marker(
+                [row["Latitude"], row["Longitude"]],
+                popup=f"{row['Obstacle Name']}<br>Height: {row['Height (m)']} m"
+            ).add_to(m)
+        st_folium(m, height=400, width=700)
+    else:
+        st.info("No obstacles to show on the map.")
