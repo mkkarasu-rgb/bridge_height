@@ -11,7 +11,7 @@ st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
 
-page = st.navigationbar("New Obstacle", ["New Obstacle", "Obstacle Lists"], sticky_nav=True, hide_streamlit_markers=True, override_theme=True)
+page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists"])
 
 if page=="New Obstacle":
 
