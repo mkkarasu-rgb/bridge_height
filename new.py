@@ -22,8 +22,8 @@ page = st.selectbox(
 
 if page == "New Obstacle":
 
-    with st.expander("Choose location method:", expanded=True):
-        selected_method= st.radio(["Select on Map", "Enter Address or Coordinates"])
+    with st.expander("Location Method", expanded=True):
+        selected_method= st.radio("Choose from:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
         location = get_geolocation()
