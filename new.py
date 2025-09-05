@@ -11,11 +11,11 @@ st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
 
-page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists"])
+page = st.navigationbar("New Obstacle", ["New Obstacle", "Obstacle Lists"], sticky_nav=True, hide_streamlit_markers=True, override_theme=True)
 
 if page=="New Obstacle":
 
-    selected_method= st.selectbox("Choose location method:", ["Current Location", "Enter Address or Coordinates", "Select on Map"])
+    selected_method= st.selectbox("Choose location method:", ["Current Location", "Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Current Location":
         location = get_geolocation()
@@ -41,9 +41,6 @@ if page=="New Obstacle":
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
             lat = map_data["last_clicked"]["lat"]
             lon = map_data["last_clicked"]["lng"]
-            # m = folium.Map(location=[lat, lon], zoom_start=15)
-            # folium.Marker([lat, lon], popup="Selected Location").add_to(m)
-            # st.components.v1.html(m._repr_html_(), height=300)
         else:
             lat, lon = None, None
 
