@@ -14,13 +14,14 @@ gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API k
 page = "New Obstacle"
 
 page = st.selectbox(
-    "Navigation",
+    "MENU:",
     ["New Obstacle", "Obstacle Lists", "Route Planner"],
     index=["New Obstacle", "Obstacle Lists", "Route Planner"].index(page),
     key="main_menu"
 )
 if page == "New Obstacle":
 
+    st.write("-----------------------------------------------")
     selected_method= st.radio("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
