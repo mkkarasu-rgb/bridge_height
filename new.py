@@ -104,18 +104,13 @@ if page == "New Obstacle":
                 st.error("Height must be a number.")
 
 elif page=="Obstacle Lists":
+
     csv_path = "bridge_info.csv"
     try:
         df = pd.read_csv(csv_path)
     except FileNotFoundError:
         st.warning("No obstacles found. Add a new obstacle first.")
         df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-
-    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
-
-    if st.button("Save Changes"):
-        edited_df.to_csv(csv_path, index=False)
-        st.toast("Changes SAVED!", icon="✅")
 
     # Display Obstacles on the Map
     if not df.empty:
@@ -130,8 +125,13 @@ elif page=="Obstacle Lists":
     else:
         st.info("No obstacles to display on the map.")
 
-elif page=="Route Planner":
+    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
 
+    if st.button("Save Changes"):
+        edited_df.to_csv(csv_path, index=False)
+        st.toast("Changes SAVED!", icon="✅")
+
+elif page=="Route Planner":
 
     with st.form("route_planner_form"):
         del_from = st.text_input("Enter starting address:")
