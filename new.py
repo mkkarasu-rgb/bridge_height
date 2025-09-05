@@ -159,7 +159,7 @@ elif page=="Route Planner":
                     route_points += googlemaps.convert.decode_polyline(polyline)
             if route_points:
                 start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
-                m = folium.Map(location=start_latlng, zoom_start=13)
+                m = folium.Map(location=start_latlng, zoom_start=7)
                 folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
                 csv_path = "bridge_info.csv"
                 try:
