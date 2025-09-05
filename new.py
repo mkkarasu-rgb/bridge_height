@@ -82,10 +82,9 @@ if page == "New Obstacle":
                     st.error("Height must be a number.")
         
         if st.button("Add New", type="primary"):
-            st.session_state["obstacle_name"] = ""
-            st.session_state["obstacle_height"] = ""
-            st.session_state["address"] = ""
-            st.expermental.rerun()
+            for key in ["obstacle_name", "obstacle_height"]:
+                if key in st.session_state:
+                    st.session_state[key] = ""
 
 elif page=="Obstacle Lists":
 
