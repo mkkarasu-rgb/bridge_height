@@ -13,6 +13,13 @@ gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API k
 
 page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists", "Route Planner"])
 
+col1, col2, col3 = st.columns(3)
+if col1.button("New Obstacle"):
+    page = "New Obstacle"
+if col2.button("Obstacle Lists"):
+    page = "Obstacle Lists"
+if col3.button("Route Planner"):
+    page = "Route Planner"
 if page=="New Obstacle":
 
     selected_method= st.radio("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
