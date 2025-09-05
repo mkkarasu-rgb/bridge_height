@@ -53,31 +53,31 @@ if page == "New Obstacle":
             folium.Marker([lat, lon], popup="Selected Location").add_to(m)
             # st_folium(m, height=500, width=800)
 
-    col1,col2,col3 = st.columns(3)
-    if col2.form_submit_button("Save Obstacle", type="primary"):
-        obstacle_name = st.session_state.get("obstacle_name", "")
-        obstacle_height = st.session_state.get("obstacle_height", "")
-        if not obstacle_name or not obstacle_height or not lat or not lon:
-            st.error("Please provide all fields and ensure location is set.")
-        else:
-            try:
-                obstacle_height = float(obstacle_height)
-                df = pd.DataFrame([{
-                    "Obstacle Name": obstacle_name,
-                    "Height (m)": obstacle_height,
-                    "Latitude": lat,
-                    "Longitude": lon
-                }])
-                csv_path = "bridge_info.csv"
+        col1,col2,col3 = st.columns(3)
+        if col2.form_submit_button("Save Obstacle", type="primary"):
+            obstacle_name = st.session_state.get("obstacle_name", "")
+            obstacle_height = st.session_state.get("obstacle_height", "")
+            if not obstacle_name or not obstacle_height or not lat or not lon:
+                st.error("Please provide all fields and ensure location is set.")
+            else:
                 try:
-                    existing = pd.read_csv(csv_path)
-                    df = pd.concat([existing, df], ignore_index=True)
-                except FileNotFoundError:
-                    pass
-                df.to_csv(csv_path, index=False)
-                st.toast("Obstacle Saved!", icon="✅")
-            except ValueError:
-                st.error("Height must be a number.")
+                    obstacle_height = float(obstacle_height)
+                    df = pd.DataFrame([{
+                        "Obstacle Name": obstacle_name,
+                        "Height (m)": obstacle_height,
+                        "Latitude": lat,
+                        "Longitude": lon
+                    }])
+                    csv_path = "bridge_info.csv"
+                    try:
+                        existing = pd.read_csv(csv_path)
+                        df = pd.concat([existing, df], ignore_index=True)
+                    except FileNotFoundError:
+                        pass
+                    df.to_csv(csv_path, index=False)
+                    st.toast("Obstacle Saved!", icon="✅")
+                except ValueError:
+                    st.error("Height must be a number.")
 
 elif page=="Obstacle Lists":
 
