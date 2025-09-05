@@ -7,11 +7,6 @@ import json
 from streamlit_js_eval import get_geolocation
 from streamlit_folium import st_folium
 
-st.session_state["show_error"] = False
-def silent_error(msg):
-    st.session_state["show_error"] = False
-st.error = silent_error
-
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
