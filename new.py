@@ -18,6 +18,11 @@ if page=="New Obstacle":
     selected_method= st.selectbox("Choose location method:", ["Current Location", "Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Current Location":
+
+        col1, col2 = st.columns(2)
+        col1.text_input("Enter obstacle name:", key="obstacle_name")
+        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
+        
         location = get_geolocation()
         if location and "coords" in location:
             coords = location["coords"]
@@ -51,7 +56,7 @@ if page=="New Obstacle":
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
-        
+
         if address:
             geocode_result = gmaps.geocode(address)
             if geocode_result:
