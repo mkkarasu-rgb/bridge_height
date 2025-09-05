@@ -19,6 +19,8 @@ if page=="New Obstacle":
 
     if selected_method == "Select on Map":
 
+        st.caption("Click on the map to select the obstacle location.")
+        
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
