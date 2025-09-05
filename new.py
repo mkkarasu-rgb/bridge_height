@@ -26,6 +26,11 @@ if page == "New Obstacle":
         selected_method= st.radio("Choose from:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
+
+        col1, col2 = st.columns(2)
+        col1.text_input("Enter obstacle name:", key="obstacle_name")
+        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
+    
         location = get_geolocation()
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
@@ -40,10 +45,6 @@ if page == "New Obstacle":
             lon = map_data["last_clicked"]["lng"]
         else:
             lat, lon = None, None
-
-        col1, col2 = st.columns(2)
-        col1.text_input("Enter obstacle name:", key="obstacle_name")
-        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
 
     elif selected_method == "Enter Address or Coordinates":
 
