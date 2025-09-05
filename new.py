@@ -13,10 +13,11 @@ gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API k
 
 page = "New Obstacle"
 
-page = st.radio(
+page = st.selectbox(
     "Navigation",
     ["New Obstacle", "Obstacle Lists", "Route Planner"],
-    horizontal=True
+    index=["New Obstacle", "Obstacle Lists", "Route Planner"].index(page),
+    key="main_menu"
 )
 if page == "New Obstacle":
 
