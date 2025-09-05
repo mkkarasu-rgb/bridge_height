@@ -48,7 +48,10 @@ if page=="New Obstacle":
     elif selected_method == "Enter Address or Coordinates":
 
         address = st.text_input("Enter an address:")
-
+        col1, col2 = st.columns(2)
+        col1.text_input("Enter obstacle name:", key="obstacle_name")
+        col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
+        
         if address:
             geocode_result = gmaps.geocode(address)
             if geocode_result:
@@ -57,10 +60,6 @@ if page=="New Obstacle":
                 m = folium.Map(location=[lat, lon], zoom_start=15)
                 folium.Marker([lat, lon], popup=address).add_to(m)
                 st.components.v1.html(m._repr_html_(), height=300)
-
-    col1, col2 = st.columns(2)
-    col1.text_input("Enter obstacle name:", key="obstacle_name")
-    col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
 
     if st.button("Save Obstacle Info"):
         obstacle_name = st.session_state.get("obstacle_name", "")
