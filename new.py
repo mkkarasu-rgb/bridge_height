@@ -22,8 +22,7 @@ page = st.selectbox(
 
 if page == "New Obstacle":
 
-    with st.expander("Location Method", expanded=True):
-
+    with st.form("obstacle_form"):
         address = st.text_input("Enter an address:")
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
@@ -55,7 +54,7 @@ if page == "New Obstacle":
             # st_folium(m, height=500, width=800)
 
     col1,col2,col3 = st.columns(3)
-    if col2.button("Save Obstacle", type="primary"):
+    if col2.form_submit_button("Save Obstacle", type="primary"):
         obstacle_name = st.session_state.get("obstacle_name", "")
         obstacle_height = st.session_state.get("obstacle_height", "")
         if not obstacle_name or not obstacle_height or not lat or not lon:
