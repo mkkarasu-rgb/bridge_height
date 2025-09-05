@@ -80,11 +80,7 @@ if page == "New Obstacle":
                     st.toast("Obstacle Saved!", icon="✅")
                 except ValueError:
                     st.error("Height must be a number.")
-        
-        if st.button("Add New", type="primary"):
-            for key in ["obstacle_name", "obstacle_height"]:
-                if key in st.session_state:
-                    st.session_state[key] = ""
+            
 
 elif page=="Obstacle Lists":
 
