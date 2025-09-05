@@ -122,39 +122,39 @@ elif page=="Route Planner":
         if not del_from or not del_to or not vehicle_height:
             st.error("Please provide all fields.")
         else:
-            try:
-                vehicle_height = float(vehicle_height)
-                directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=True, optimize_waypoints=True)
-                if not directions_result:
-                    st.error("Could not find a route. Please check the addresses.")
+            # try:
+            vehicle_height = float(vehicle_height)
+            directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=True, optimize_waypoints=True)
+            if not directions_result:
+                st.error("Could not find a route. Please check the addresses.")
+            else:
+                steps = directions_result[0]['legs'][0]['steps']
+                csv_path = "bridge_info.csv"
+                try:
+                    obstacles_df = pd.read_csv(csv_path)
+                except FileNotFoundError:
+                    obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+
+                obstacle_warnings = []
+                for step in steps:
+                    start_loc = (step['start_location']['lat'], step['start_location']['lng'])
+                    end_loc = (step['end_location']['lat'], step['end_location']['lng'])
+                    for _, obstacle in obstacles_df.iterrows():
+                        obstacle_loc = (obstacle['Latitude'], obstacle['Longitude'])
+                        dist_to_start = geodesic(start_loc, obstacle_loc).meters
+                        dist_to_end = geodesic(end_loc, obstacle_loc).meters
+                        if dist_to_start < 1000 or dist_to_end < 1000:  # within 100 meters of start or end of step
+                            if obstacle['Height (m)'] < vehicle_height:
+                                warning = f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height {obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) near step: {step['html_instructions']}"
+                                obstacle_warnings.append(warning)
+
+                if obstacle_warnings:
+                    for warning in obstacle_warnings:
+                        st.error(warning)
                 else:
-                    steps = directions_result[0]['legs'][0]['steps']
-                    csv_path = "bridge_info.csv"
-                    try:
-                        obstacles_df = pd.read_csv(csv_path)
-                    except FileNotFoundError:
-                        obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-
-                    obstacle_warnings = []
-                    for step in steps:
-                        start_loc = (step['start_location']['lat'], step['start_location']['lng'])
-                        end_loc = (step['end_location']['lat'], step['end_location']['lng'])
-                        for _, obstacle in obstacles_df.iterrows():
-                            obstacle_loc = (obstacle['Latitude'], obstacle['Longitude'])
-                            dist_to_start = geodesic(start_loc, obstacle_loc).meters
-                            dist_to_end = geodesic(end_loc, obstacle_loc).meters
-                            if dist_to_start < 100 or dist_to_end < 100:  # within 100 meters of start or end of step
-                                if obstacle['Height (m)'] < vehicle_height:
-                                    warning = f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height {obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) near step: {step['html_instructions']}"
-                                    obstacle_warnings.append(warning)
-
-                    if obstacle_warnings:
-                        for warning in obstacle_warnings:
-                            st.error(warning)
-                    else:
-                        st.success("No height obstacles on your route!")
-            except ValueError:
-                st.error("Vehicle height must be a number.")
+                    st.success("No height obstacles on your route!")
+            # except ValueError:
+                # st.error("Vehicle height must be a number.")
 
     # Visualize Route and Obstacles
     if del_from and del_to:
