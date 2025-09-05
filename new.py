@@ -7,6 +7,11 @@ import json
 from streamlit_js_eval import get_geolocation
 from streamlit_folium import st_folium
 
+st.session_state["show_error"] = False
+def silent_error(msg):
+    st.session_state["show_error"] = False
+st.error = silent_error
+
 st.set_page_config(page_title="Bridge Height Checker", layout="centered")
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
@@ -44,9 +49,9 @@ if page == "New Obstacle":
                 address = "You are here"
         
         if lat is None or lon is None:
-            st.info("Please enter an address or allow location access.")
+            st.info("Address was not found on Google Maps.")
             m = None
-            
+
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
