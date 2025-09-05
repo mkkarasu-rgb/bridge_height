@@ -102,7 +102,6 @@ elif page=="Obstacle Lists":
         st.toast("Changes SAVED!", icon="✅")
 
     # Display Obstacles on the Map
-    st.subheader("Obstacle Map")
     if not df.empty:
         m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=12)
         for _, obstacle in df.iterrows():
