@@ -167,11 +167,11 @@ elif page=="Route Planner":
                                     )
                                     obstacle_warnings.append(warning)
                     if obstacle_warnings:
-                        st.warning("Height obstacles detected on your route")
+                        st.toast("Height obstacles detected on your route",icon="⚠️")
                         # for warning in obstacle_warnings:
                         #     st.error(warning)
                     else:
-                        st.success("No height obstacles on your route!")
+                        st.toast("No height obstacles on your route!",icon="✅")
 
     # Visualize Route and Obstacles
     if del_from and del_to:
