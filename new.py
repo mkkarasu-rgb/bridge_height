@@ -112,129 +112,128 @@ elif page=="Obstacle Lists":
 
 elif page=="Route Planner":
 
-    with st.form("route_planner_form"):
-        del_from = st.text_input("Enter starting address:")
-        del_to = st.text_input("Enter destination address:")
-        vehicle_height = st.text_input("Enter your vehicle height in meters:")
-        submitted = st.form_submit_button("Plan Route")
+    del_from = st.text_input("Enter starting address:")
+    del_to = st.text_input("Enter destination address:")
+    vehicle_height = st.text_input("Enter your vehicle height in meters:")
+    submitted = st.form_submit_button("Plan Route")
 
-    if submitted:
-        if not del_from or not del_to or not vehicle_height:
-            st.error("Please provide all fields.")
-        else:
-            try:
-                vehicle_height = float(vehicle_height)
-            except ValueError:
-                st.error("Vehicle height must be a number.")
-                vehicle_height = None
 
-            if vehicle_height is not None:
-                directions_result = gmaps.directions(
-                    del_from, del_to, mode="driving", departure_time="now",
-                    avoid=["ferries"], traffic_model="best_guess",
-                    alternatives=False, optimize_waypoints=True
-                )
-                if not directions_result:
-                    st.error("Could not find a route. Please check the addresses.")
-                else:
-                    route_points = []
-                    steps = directions_result[0]['legs'][0]['steps']
-                    for step in steps:
-                        polyline = step.get('polyline', {}).get('points')
-                        if polyline:
-                            route_points += googlemaps.convert.decode_polyline(polyline)
-                    if route_points:
-                        start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
-                        m = folium.Map(location=start_latlng, zoom_start=7)
-                        folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
-                        csv_path = "bridge_info.csv"
-                        try:
-                            obstacles_df = pd.read_csv(csv_path)
-                        except FileNotFoundError:
-                            obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-                        for _, obstacle in obstacles_df.iterrows():
-                            folium.Marker(
-                                [obstacle['Latitude'], obstacle['Longitude']],
-                                popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
-                                icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
-                            ).add_to(m)
-                        # Add markers for start and end locations
-                        folium.Marker(
-                            [route_points[0]['lat'], route_points[0]['lng']],
-                            popup="Start",
-                            icon=folium.Icon(color="blue", icon="play")
-                        ).add_to(m)
-                        folium.Marker(
-                            [route_points[-1]['lat'], route_points[-1]['lng']],
-                            popup="Destination",
-                            icon=folium.Icon(color="green", icon="flag")
-                        ).add_to(m)
-                        st_folium(m, height=500, width=800)
+    if not del_from or not del_to or not vehicle_height:
+        st.error("Please provide all fields.")
+    else:
+        try:
+            vehicle_height = float(vehicle_height)
+        except ValueError:
+            st.error("Vehicle height must be a number.")
+            vehicle_height = None
 
-                    steps = directions_result[0]['legs'][0]['steps']
+        if vehicle_height is not None:
+            directions_result = gmaps.directions(
+                del_from, del_to, mode="driving", departure_time="now",
+                avoid=["ferries"], traffic_model="best_guess",
+                alternatives=False, optimize_waypoints=True
+            )
+            if not directions_result:
+                st.error("Could not find a route. Please check the addresses.")
+            else:
+                route_points = []
+                steps = directions_result[0]['legs'][0]['steps']
+                for step in steps:
+                    polyline = step.get('polyline', {}).get('points')
+                    if polyline:
+                        route_points += googlemaps.convert.decode_polyline(polyline)
+                if route_points:
+                    start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
+                    m = folium.Map(location=start_latlng, zoom_start=7)
+                    folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
                     csv_path = "bridge_info.csv"
                     try:
                         obstacles_df = pd.read_csv(csv_path)
                     except FileNotFoundError:
                         obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+                    for _, obstacle in obstacles_df.iterrows():
+                        folium.Marker(
+                            [obstacle['Latitude'], obstacle['Longitude']],
+                            popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+                            icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
+                        ).add_to(m)
+                    # Add markers for start and end locations
+                    folium.Marker(
+                        [route_points[0]['lat'], route_points[0]['lng']],
+                        popup="Start",
+                        icon=folium.Icon(color="blue", icon="play")
+                    ).add_to(m)
+                    folium.Marker(
+                        [route_points[-1]['lat'], route_points[-1]['lng']],
+                        popup="Destination",
+                        icon=folium.Icon(color="green", icon="flag")
+                    ).add_to(m)
+                    st_folium(m, height=500, width=800)
 
-                    obstacle_warnings = []
-                    for step in steps:
-                        start_loc = (step['start_location']['lat'], step['start_location']['lng'])
-                        end_loc = (step['end_location']['lat'], step['end_location']['lng'])
-                        for _, obstacle in obstacles_df.iterrows():
-                            obstacle_loc = (obstacle['Latitude'], obstacle['Longitude'])
-                            dist_to_start = geodesic(start_loc, obstacle_loc).meters
-                            dist_to_end = geodesic(end_loc, obstacle_loc).meters
-                            if dist_to_start < 150 or dist_to_end < 150:
-                                if obstacle['Height (m)'] < vehicle_height:
-                                    warning = (
-                                        f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height "
-                                        f"{obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) "
-                                        f"near step: {step['html_instructions']}"
-                                    )
-                                    obstacle_warnings.append(warning)
-                    if obstacle_warnings:
-                        st.toast("Height obstacles detected on your route",icon="⚠️")
-                        # for warning in obstacle_warnings:
-                        #     st.error(warning)
-                    else:
-                        st.toast("No height obstacles on your route!",icon="✅")
+                steps = directions_result[0]['legs'][0]['steps']
+                csv_path = "bridge_info.csv"
+                try:
+                    obstacles_df = pd.read_csv(csv_path)
+                except FileNotFoundError:
+                    obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
 
-            # # Visualize Route and Obstacles
-            # if del_from and del_to:
-            #     directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=False, optimize_waypoints=True)
-            #     if directions_result:
-            #         route_points = []
-            #         steps = directions_result[0]['legs'][0]['steps']
-            #         for step in steps:
-            #             polyline = step.get('polyline', {}).get('points')
-            #             if polyline:
-            #                 route_points += googlemaps.convert.decode_polyline(polyline)
-            #         if route_points:
-            #             start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
-            #             m = folium.Map(location=start_latlng, zoom_start=7)
-            #             folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
-            #             csv_path = "bridge_info.csv"
-            #             try:
-            #                 obstacles_df = pd.read_csv(csv_path)
-            #             except FileNotFoundError:
-            #                 obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-            #             for _, obstacle in obstacles_df.iterrows():
-            #                 folium.Marker(
-            #                     [obstacle['Latitude'], obstacle['Longitude']],
-            #                     popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
-            #                     icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
-            #                 ).add_to(m)
-            #             # Add markers for start and end locations
-            #             folium.Marker(
-            #                 [route_points[0]['lat'], route_points[0]['lng']],
-            #                 popup="Start",
-            #                 icon=folium.Icon(color="blue", icon="play")
-            #             ).add_to(m)
-            #             folium.Marker(
-            #                 [route_points[-1]['lat'], route_points[-1]['lng']],
-            #                 popup="Destination",
-            #                 icon=folium.Icon(color="green", icon="flag")
-            #             ).add_to(m)
-            #             st_folium(m, height=500, width=800)
+                obstacle_warnings = []
+                for step in steps:
+                    start_loc = (step['start_location']['lat'], step['start_location']['lng'])
+                    end_loc = (step['end_location']['lat'], step['end_location']['lng'])
+                    for _, obstacle in obstacles_df.iterrows():
+                        obstacle_loc = (obstacle['Latitude'], obstacle['Longitude'])
+                        dist_to_start = geodesic(start_loc, obstacle_loc).meters
+                        dist_to_end = geodesic(end_loc, obstacle_loc).meters
+                        if dist_to_start < 150 or dist_to_end < 150:
+                            if obstacle['Height (m)'] < vehicle_height:
+                                warning = (
+                                    f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height "
+                                    f"{obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) "
+                                    f"near step: {step['html_instructions']}"
+                                )
+                                obstacle_warnings.append(warning)
+                if obstacle_warnings:
+                    st.toast("Height obstacles detected on your route",icon="⚠️")
+                    # for warning in obstacle_warnings:
+                    #     st.error(warning)
+                else:
+                    st.toast("No height obstacles on your route!",icon="✅")
+
+        # # Visualize Route and Obstacles
+        # if del_from and del_to:
+        #     directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now", avoid=["ferries"], traffic_model="best_guess", alternatives=False, optimize_waypoints=True)
+        #     if directions_result:
+        #         route_points = []
+        #         steps = directions_result[0]['legs'][0]['steps']
+        #         for step in steps:
+        #             polyline = step.get('polyline', {}).get('points')
+        #             if polyline:
+        #                 route_points += googlemaps.convert.decode_polyline(polyline)
+        #         if route_points:
+        #             start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
+        #             m = folium.Map(location=start_latlng, zoom_start=7)
+        #             folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
+        #             csv_path = "bridge_info.csv"
+        #             try:
+        #                 obstacles_df = pd.read_csv(csv_path)
+        #             except FileNotFoundError:
+        #                 obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+        #             for _, obstacle in obstacles_df.iterrows():
+        #                 folium.Marker(
+        #                     [obstacle['Latitude'], obstacle['Longitude']],
+        #                     popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+        #                     icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
+        #                 ).add_to(m)
+        #             # Add markers for start and end locations
+        #             folium.Marker(
+        #                 [route_points[0]['lat'], route_points[0]['lng']],
+        #                 popup="Start",
+        #                 icon=folium.Icon(color="blue", icon="play")
+        #             ).add_to(m)
+        #             folium.Marker(
+        #                 [route_points[-1]['lat'], route_points[-1]['lng']],
+        #                 popup="Destination",
+        #                 icon=folium.Icon(color="green", icon="flag")
+        #             ).add_to(m)
+        #             st_folium(m, height=500, width=800)
