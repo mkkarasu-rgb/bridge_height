@@ -56,8 +56,7 @@ if page == "New Obstacle":
             folium.Marker([lat, lon], popup="Selected Location").add_to(m)
             # st_folium(m, height=500, width=800)
 
-        col1,col2,col3 = st.columns(3)
-        if col2.button("Save Obstacle", type="primary"):
+        if st.button("Save Obstacle", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
