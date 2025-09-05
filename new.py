@@ -116,7 +116,7 @@ elif page=="Route Planner":
         del_from = st.text_input("Enter starting address:")
         del_to = st.text_input("Enter destination address:")
         vehicle_height = st.text_input("Enter your vehicle height in meters:")
-        submitted = st.form_submit_button("Plan Route")
+        submitted = st.form_submit_button("Plan Route", type="primary")
 
     if submitted:
         if not del_from or not del_to or not vehicle_height:
