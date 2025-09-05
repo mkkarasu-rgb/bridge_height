@@ -60,7 +60,11 @@ if page == "New Obstacle":
             if geocode_result:
                 location = geocode_result[0]['geometry']['location']
                 lat, lon = location['lat'], location['lng']
-
+        if not address:
+            location = get_geolocation()
+            coords = location["coords"] if location and "coords" in location else {}
+            lat = coords.get("latitude")
+            lon = coords.get("longitude")
         m = None
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
