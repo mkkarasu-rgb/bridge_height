@@ -66,7 +66,7 @@ if page == "New Obstacle":
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
-                st.error("Please provide all fields and ensure location is set.")
+                st.toast("Please provide all fields and ensure location is set.", icon="⚠️")
             else:
                 try:
                     obstacle_height = float(obstacle_height)
