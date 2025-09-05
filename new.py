@@ -39,7 +39,7 @@ if page == "New Obstacle":
             lon = map_data["last_clicked"]["lng"]
         else:
             lat, lon = None, None
-            
+
         col1, col2 = st.columns(2)
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
@@ -101,7 +101,7 @@ elif page=="Obstacle Lists":
 
     # Display Obstacles on the Map
     if not df.empty:
-        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=12)
+        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=5)
         for _, obstacle in df.iterrows():
             folium.Marker(
                 [obstacle["Latitude"], obstacle["Longitude"]],
