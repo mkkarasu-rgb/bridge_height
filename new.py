@@ -196,11 +196,11 @@ elif page=="Route Planner":
                 folium.Marker(
                     [route_points[0]['lat'], route_points[0]['lng']],
                     popup="Start",
-                    icon=folium.Icon(color="black", icon="fa-solid fa-truck")
+                    icon=folium.Icon(color="blue", icon="play")
                 ).add_to(m)
                 folium.Marker(
                     [route_points[-1]['lat'], route_points[-1]['lng']],
                     popup="Destination",
-                    icon=folium.Icon(color="yellow", icon="flag")
+                    icon=folium.Icon(color="green", icon="flag")
                 ).add_to(m)
                 st_folium(m, height=500, width=800)
