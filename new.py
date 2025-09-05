@@ -54,21 +54,28 @@ if page == "New Obstacle":
         col1.text_input("Enter obstacle name:", key="obstacle_name")
         col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
 
+        lat, lon = None, None
         if address:
             geocode_result = gmaps.geocode(address)
             if geocode_result:
                 location = geocode_result[0]['geometry']['location']
                 lat, lon = location['lat'], location['lng']
-                m = folium.Map(location=[lat, lon], zoom_start=15)
-                folium.Marker([lat, lon], popup=address).add_to(m)
-                st.components.v1.html(m._repr_html_(), height=300)
-            m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=500, width=800)
-            if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
-                lat = map_data["last_clicked"]["lat"]
-                lon = map_data["last_clicked"]["lng"]
-            else:
-                lat, lon = None, None
+
+        m = None
+        if lat is not None and lon is not None:
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            folium.Marker([lat, lon], popup=address).add_to(m)
+        else:
+            m = folium.Map(location=[0, 0], zoom_start=2)
+        m.add_child(folium.LatLngPopup())
+        map_data = st_folium(m, height=500, width=800)
+        if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
+            lat = map_data["last_clicked"]["lat"]
+            lon = map_data["last_clicked"]["lng"]
+            # Show only the last clicked marker
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            folium.Marker([lat, lon], popup="Selected Location").add_to(m)
+            st_folium(m, height=500, width=800)
 
     col1,col2,col3 = st.columns(3)
     if col2.button("Save Obstacle", type="primary"):
