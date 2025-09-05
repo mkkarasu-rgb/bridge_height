@@ -22,7 +22,7 @@ page = st.selectbox(
 
 if page == "New Obstacle":
 
-    with st.expander("Location Method", expanded=True):
+    with st.expander("Add new obstacle", expanded=True):
 
         address = st.text_input("Enter an address:")
         col1, col2 = st.columns(2)
