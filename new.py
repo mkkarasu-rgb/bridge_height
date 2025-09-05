@@ -30,7 +30,11 @@ if page=="New Obstacle":
             st.error("Could not get current location. Please allow location access.")
 
     elif selected_method == "Select on Map":
-        m = folium.Map(location=get_geolocation(), zoom_start=15)
+        location = get_geolocation()
+        coords = location["coords"] if location and "coords" in location else {}
+        lat = coords.get("latitude")
+        lon = coords.get("longitude")
+        m = folium.Map(location=[lat,lon], zoom_start=15)
         st.write("Click on the map to select a location.")
         m.add_child(folium.LatLngPopup())
         map_data = st_folium(m, height=300, width=700)
