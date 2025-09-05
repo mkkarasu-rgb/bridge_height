@@ -151,6 +151,7 @@ elif page=="Route Planner":
                 if obstacle_warnings:
                     for warning in obstacle_warnings:
                         st.error(warning)
+                        st.caption(warning)
                 else:
                     st.success("No height obstacles on your route!")
             # except ValueError:
