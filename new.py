@@ -27,7 +27,7 @@ if page == "New Obstacle":
 
     if selected_method == "Select on Map":
 
-        with st.form("map_form"):
+        with st.expander("Enter Name, Height and Click on the Map", expanded=True):
             col1, col2 = st.columns(2)
             col1.text_input("Enter obstacle name:", key="obstacle_name")
             col2.text_input("Enter obstacle height in meters:", key="obstacle_height")
