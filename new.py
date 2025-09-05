@@ -210,25 +210,3 @@ elif page=="Route Planner":
                     icon=folium.Icon(color="green", icon="flag")
                 ).add_to(m)
                 st_folium(m, height=500, width=800)
-
-                with st.expander("Add a Comment about your route"):
-                    comment = st.text_area("Enter your comment here:")
-                    if st.button("Submit Comment"):
-                        if comment.strip():
-                            comments_path = "route_comments.csv"
-                            route_info = {
-                                "From": del_from,
-                                "To": del_to,
-                                "Vehicle Height": vehicle_height,
-                                "Comment": comment
-                            }
-                            try:
-                                existing_comments = pd.read_csv(comments_path)
-                                new_comment_df = pd.DataFrame([route_info])
-                                all_comments = pd.concat([existing_comments, new_comment_df], ignore_index=True)
-                            except FileNotFoundError:
-                                all_comments = pd.DataFrame([route_info])
-                            all_comments.to_csv(comments_path, index=False)
-                            st.toast("Comment submitted!", icon="💬")
-                        else:
-                            st.error("Comment cannot be empty.")
