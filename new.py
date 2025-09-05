@@ -148,27 +148,27 @@ elif page=="Route Planner":
                             warning = f"Warning: Obstacle '{obstacle['Obstacle Name']}' with height {obstacle['Height (m)']}m is too low for your vehicle ({vehicle_height}m) near step: {step['html_instructions']}"
                             obstacle_warnings.append(warning)
 
-                            # Show alternative route if available
-                            if len(directions_result) > 1:
-                                st.info("Alternative route found. Displaying on map below.")
-                                alt_route_points = []
-                                alt_steps = directions_result[1]['legs'][0]['steps']
-                                for alt_step in alt_steps:
-                                    polyline = alt_step.get('polyline', {}).get('points')
-                                    if polyline:
-                                        alt_route_points += googlemaps.convert.decode_polyline(polyline)
-                                if alt_route_points:
-                                    alt_start_latlng = [alt_route_points[0]['lat'], alt_route_points[0]['lng']]
-                                    alt_map = folium.Map(location=alt_start_latlng, zoom_start=13)
-                                    folium.PolyLine([(pt['lat'], pt['lng']) for pt in alt_route_points], color="orange", weight=5, opacity=0.7, tooltip="Alternative Route").add_to(alt_map)
-                                    for _, obstacle in obstacles_df.iterrows():
-                                        folium.Marker(
-                                            [obstacle['Latitude'], obstacle['Longitude']],
-                                            popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
-                                            icon=folium.Icon(color="red" if obstacle['Height (m)'] < vehicle_height else "green")
-                                        ).add_to(alt_map)
-                                    st_folium(alt_map, height=500, width=800)
-                                    
+                        # Show alternative route if available
+                        if len(directions_result) > 1:
+                            st.info("Alternative route found. Displaying on map below.")
+                            alt_route_points = []
+                            alt_steps = directions_result[1]['legs'][0]['steps']
+                            for alt_step in alt_steps:
+                                polyline = alt_step.get('polyline', {}).get('points')
+                                if polyline:
+                                    alt_route_points += googlemaps.convert.decode_polyline(polyline)
+                            if alt_route_points:
+                                alt_start_latlng = [alt_route_points[0]['lat'], alt_route_points[0]['lng']]
+                                alt_map = folium.Map(location=alt_start_latlng, zoom_start=13)
+                                folium.PolyLine([(pt['lat'], pt['lng']) for pt in alt_route_points], color="orange", weight=5, opacity=0.7, tooltip="Alternative Route").add_to(alt_map)
+                                for _, obstacle in obstacles_df.iterrows():
+                                    folium.Marker(
+                                        [obstacle['Latitude'], obstacle['Longitude']],
+                                        popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+                                        icon=folium.Icon(color="red" if obstacle['Height (m)'] < vehicle_height else "green")
+                                    ).add_to(alt_map)
+                                st_folium(alt_map, height=500, width=800)
+
             if obstacle_warnings:
                 for warning in obstacle_warnings:
                     st.error(warning)
