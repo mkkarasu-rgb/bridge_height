@@ -80,6 +80,9 @@ if page == "New Obstacle":
                     st.toast("Obstacle Saved!", icon="✅")
                 except ValueError:
                     st.error("Height must be a number.")
+        
+        if st.button("Add New", type="primary"):
+            st.rerun()
 
 elif page=="Obstacle Lists":
 
