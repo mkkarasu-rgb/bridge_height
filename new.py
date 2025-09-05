@@ -28,7 +28,7 @@ if page=="New Obstacle":
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=12)
             folium.Marker([lat, lon], popup="You are here", icon=folium.Icon(color="blue")).add_to(m) 
-            st_folium(m, height=500, width=800)
+            # st_folium(m, height=500, width=800)
         m.add_child(folium.LatLngPopup())
         map_data = st_folium(m, height=500, width=800)
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
