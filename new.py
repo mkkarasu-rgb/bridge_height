@@ -42,7 +42,11 @@ if page == "New Obstacle":
             lon = coords.get("longitude")
             if lat is not None and lon is not None:
                 address = "You are here"
-        m = None
+        
+        if lat is None or lon is None:
+            st.info("Please enter an address or allow location access.")
+            m = None
+            
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
