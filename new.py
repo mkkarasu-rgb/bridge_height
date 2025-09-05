@@ -33,6 +33,7 @@ if page=="New Obstacle":
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
             lat = map_data["last_clicked"]["lat"]
             lon = map_data["last_clicked"]["lng"]
+            folium.Marker([lat, lon], popup="Selected Location", icon=folium.Icon(color="orange")).add_to(m)
         else:
             lat, lon = None, None
         
