@@ -196,7 +196,7 @@ elif page=="Route Planner":
                 folium.Marker(
                     [route_points[0]['lat'], route_points[0]['lng']],
                     popup="Start",
-                    icon=folium.Icon(color="black", icon="truck")
+                    icon=folium.Icon(color="black", icon="<i class="fa-solid fa-truck"></i>")
                 ).add_to(m)
                 folium.Marker(
                     [route_points[-1]['lat'], route_points[-1]['lng']],
