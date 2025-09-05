@@ -101,6 +101,20 @@ elif page=="Obstacle Lists":
         edited_df.to_csv(csv_path, index=False)
         st.toast("Changes SAVED!", icon="✅")
 
+    # Display Obstacles on the Map
+    st.subheader("Obstacle Map")
+    if not df.empty:
+        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=12)
+        for _, obstacle in df.iterrows():
+            folium.Marker(
+                [obstacle["Latitude"], obstacle["Longitude"]],
+                popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+                icon=folium.Icon(color="red")
+            ).add_to(m)
+        st_folium(m, height=500, width=800)
+    else:
+        st.info("No obstacles to display on the map.")
+
 elif page=="Route Planner":
     del_from = st.text_input("Enter starting address:")
     del_to = st.text_input("Enter destination address:")
@@ -143,28 +157,29 @@ elif page=="Route Planner":
             except ValueError:
                 st.error("Vehicle height must be a number.")
 
-# Visualize Route and Obstacles (static map, no rerun on move)
-if del_from and del_to and directions_result:
-    route_points = []
-    steps = directions_result[0]['legs'][0]['steps']
-    for step in steps:
-        polyline = step.get('polyline', {}).get('points')
-        if polyline:
-            route_points += googlemaps.convert.decode_polyline(polyline)
-    if route_points:
-        start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
-        m = folium.Map(location=start_latlng, zoom_start=13, control_scale=True)
-        folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
-        csv_path = "bridge_info.csv"
-        try:
-            obstacles_df = pd.read_csv(csv_path)
-        except FileNotFoundError:
-            obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-        for _, obstacle in obstacles_df.iterrows():
-            folium.Marker(
-                [obstacle['Latitude'], obstacle['Longitude']],
-                popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
-                icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
-            ).add_to(m)
-        # Use st.components.v1.html for static map (no rerun on move)
-        st.components.v1.html(m._repr_html_(), height=500, width=800)
+    # Visualize Route and Obstacles
+    if del_from and del_to:
+        directions_result = gmaps.directions(del_from, del_to, mode="driving", departure_time="now")
+        if directions_result:
+            route_points = []
+            steps = directions_result[0]['legs'][0]['steps']
+            for step in steps:
+                polyline = step.get('polyline', {}).get('points')
+                if polyline:
+                    route_points += googlemaps.convert.decode_polyline(polyline)
+            if route_points:
+                start_latlng = [route_points[0]['lat'], route_points[0]['lng']]
+                m = folium.Map(location=start_latlng, zoom_start=13)
+                folium.PolyLine([(pt['lat'], pt['lng']) for pt in route_points], color="blue", weight=5, opacity=0.7).add_to(m)
+                csv_path = "bridge_info.csv"
+                try:
+                    obstacles_df = pd.read_csv(csv_path)
+                except FileNotFoundError:
+                    obstacles_df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+                for _, obstacle in obstacles_df.iterrows():
+                    folium.Marker(
+                        [obstacle['Latitude'], obstacle['Longitude']],
+                        popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+                        icon=folium.Icon(color="red" if obstacle['Height (m)'] < float(vehicle_height) else "green")
+                    ).add_to(m)
+                st_folium(m, height=500, width=800)
