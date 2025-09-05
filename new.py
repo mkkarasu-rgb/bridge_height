@@ -21,7 +21,7 @@ if page=="New Obstacle":
 
         st.info("Click on the map to select the obstacle location.")
         
-        location = get_geolocation()
+        location = get_geolocation(disable_warning=True)
         coords = location["coords"] if location and "coords" in location else {}
         lat = coords.get("latitude")
         lon = coords.get("longitude")
