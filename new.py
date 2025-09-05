@@ -62,7 +62,7 @@ if page == "New Obstacle":
                 folium.Marker([lat, lon], popup=address).add_to(m)
                 st.components.v1.html(m._repr_html_(), height=300)
 
-    if st.button("Save Obstacle Info"):
+    if st.button("Save Obstacle", type="primary"):
         obstacle_name = st.session_state.get("obstacle_name", "")
         obstacle_height = st.session_state.get("obstacle_height", "")
         if not obstacle_name or not obstacle_height or not lat or not lon:
