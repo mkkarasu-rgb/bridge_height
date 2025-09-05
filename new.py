@@ -15,7 +15,7 @@ page = st.sidebar.radio("Menu", ["New Obstacle", "Obstacle Lists", "Route Planne
 
 if page=="New Obstacle":
 
-    selected_method= st.selectbox("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
+    selected_method= st.radio("Choose location method:", ["Select on Map", "Enter Address or Coordinates"])
 
     if selected_method == "Select on Map":
 
