@@ -51,7 +51,7 @@ if page == "New Obstacle":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=500, width=800)
+            map_data = st_folium(m, height=300, width=800)
         else:
             map_data = None
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
@@ -60,7 +60,6 @@ if page == "New Obstacle":
             # Show only the last clicked marker
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Selected Location").add_to(m)
-            # st_folium(m, height=500, width=800)
 
         if st.button("Save Obstacle", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
