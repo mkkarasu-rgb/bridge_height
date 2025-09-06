@@ -16,7 +16,7 @@ if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 if not st.session_state.logged_in:
-    st.title("Login to Bridge Height Checker")
+    st.subheader("Login to Bridge Height Checker")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
