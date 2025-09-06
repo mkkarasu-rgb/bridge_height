@@ -11,6 +11,22 @@ st.set_page_config(page_title="Bridge Height Checker", layout="centered", page_i
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"]) # You would get your API keys from st.secrets
 
 
+# Authentication
+if 'logged_in' not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+    st.title("Login to Bridge Height Checker")
+    username = st.text_input("Username")
+    password = st.text_input("Password", type="password")
+    if st.button("Login"):
+        if username == st.secrets["username"] and password == st.secrets["password"]:
+            st.session_state.logged_in = True
+            st.rerun()
+        else:
+            st.error("Invalid credentials")
+    st.stop()
+
 page = "New Obstacle"
 
 page = st.selectbox(
