@@ -67,7 +67,7 @@ if page == "New Obstacle":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=300, width=800)
+            map_data = st_folium(m, height=300, width=500)
         else:
             map_data = None
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
@@ -121,7 +121,7 @@ elif page=="Obstacle Lists":
                 popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
                 icon=folium.Icon(color="red")
             ).add_to(m)
-        st_folium(m, height=500, width=800)
+        st_folium(m, height=300, width=500)
     else:
         st.info("No obstacles to display on the map.")
 
@@ -224,4 +224,4 @@ elif page=="Route Planner":
                     popup="Destination",
                     icon=folium.Icon(color="blue", icon="flag")
                 ).add_to(m)
-                st_folium(m, height=500, width=800)
+                st_folium(m, height=300, width=500)
