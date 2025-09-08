@@ -110,7 +110,7 @@ elif page=="Engel Listesi":
         df = pd.read_csv(csv_path)
     except FileNotFoundError:
         st.warning("Engel bulunamadı. Lütfen önce yeni engel ekleyin.")
-        df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
+        df = pd.DataFrame(columns=["Engel İsmi", "Yükseklik (m)", "Enlem", "Boylam"])
 
     # Display Obstacles on the Map
     if not df.empty:
