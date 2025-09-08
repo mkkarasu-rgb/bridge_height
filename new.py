@@ -42,7 +42,7 @@ if page == "Yeni Engel":
 
         address = st.text_input("Adresi Girin:", placeholder="Boş bırakıldığında mevcut konum kullanılır")
         col1, col2 = st.columns(2)
-        col1.text_input("Engel Adı:", key="obstacle_name")
+        col1.text_input("Engel İsmi:", key="obstacle_name")
         col2.text_input("Engel Yüksekliği (m):", key="obstacle_height")
 
         lat, lon = None, None
@@ -81,7 +81,7 @@ if page == "Yeni Engel":
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
-                st.toast("Engel adı, yüksekliği veya konumunu eksik.", icon="❌")
+                st.toast("Engel İsmi, yüksekliği veya konumunu eksik.", icon="❌")
             else:
                 try:
                     obstacle_height = float(obstacle_height)
@@ -118,7 +118,7 @@ elif page=="Engel Listesi":
         for _, obstacle in df.iterrows():
             folium.Marker(
                 [obstacle["Latitude"], obstacle["Longitude"]],
-                popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
+                popup=f"{obstacle['Engel İsmi']} ({obstacle['Yükseklik (m)']}m)",
                 icon=folium.Icon(color="red")
             ).add_to(m)
         st_folium(m, height=300, width=700)
@@ -163,7 +163,7 @@ elif page=="Rota Kontrol":
                     try:
                         obstacles_df = pd.read_csv(csv_path)
                     except FileNotFoundError:
-                        obstacles_df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
+                        obstacles_df = pd.DataFrame(columns=["Engel İsmi", "Yükseklik (m)", "Enlem", "Boylam"])
 
                     obstacle_warnings = []
                     for step in steps:
@@ -176,7 +176,7 @@ elif page=="Rota Kontrol":
                             if dist_to_start < 150 or dist_to_end < 150:
                                 if obstacle['Yükseklik (m)'] < vehicle_height:
                                     warning = (
-                                        f"Uyarı: '{obstacle['Engel Adı']}' yüksekliği"
+                                        f"Uyarı: '{obstacle['Engel İsmi']}' yüksekliği"
                                         f"{obstacle['Yükseklik (m)']}m aracınız için çok alçak ({vehicle_height}m) "
                                         f"near step: {step['html_instructions']}"
                                     )
@@ -206,11 +206,11 @@ elif page=="Rota Kontrol":
                 try:
                     obstacles_df = pd.read_csv(csv_path)
                 except FileNotFoundError:
-                    obstacles_df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
+                    obstacles_df = pd.DataFrame(columns=["Engel İsmi", "Yükseklik (m)", "Enlem", "Boylam"])
                 for _, obstacle in obstacles_df.iterrows():
                     folium.Marker(
                         [obstacle['Latitude'], obstacle['Longitude']],
-                        popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
+                        popup=f"{obstacle['Engel İsmi']} ({obstacle['Yükseklik (m)']}m)",
                         icon=folium.Icon(color="red" if obstacle['Yükseklik (m)'] < float(vehicle_height) else "green")
                     ).add_to(m)
                 # Add markers for start and end locations
