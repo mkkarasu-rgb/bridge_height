@@ -217,7 +217,7 @@ elif page == "Rota Planlayıcı":
                             ).add_to(m)
                             folium.Circle(
                             location=[row["Enlem"], row["Boylam"]],
-                            radius=50,  # metre cinsinden
+                            radius=150,  # metre cinsinden
                             color="blue",         # kenar rengi
                             weight=2,             # kenar kalınlığı
                             fill=True,
