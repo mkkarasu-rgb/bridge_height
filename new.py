@@ -125,8 +125,13 @@ if page == "Yeni Engel":
         if col4.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
-            if not obstacle_name or not obstacle_height or not lat or not lon:
-                st.toast("Lütfen tüm alanları doldurun ve konumun ayarlandığından emin olun.", icon="❌")
+
+        # Konum girilmiş mi kontrolü
+            if not lat or not lon:
+                st.toast("Lütfen haritada bir konum seçin.", icon="❌")
+            # Diğer alanlar dolu mu kontrolü
+            elif not obstacle_name or not obstacle_height:
+                st.toast("Lütfen engel adı ve yüksekliğini girin.", icon="❌")
             else:
                 try:
                     obstacle_height = float(obstacle_height)
