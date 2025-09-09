@@ -10,8 +10,8 @@ import gspread
 from google.oauth2.service_account import Credentials
 
 # Google Sheets setup
-SHEET_NAME = "bridge_info"
-WORKSHEET_NAME = "obstacles"
+SHEET_NAME = "obstacles"
+WORKSHEET_NAME = "bridge_info"
 
 # Authenticate using service account credentials from st.secrets
 scope = [
