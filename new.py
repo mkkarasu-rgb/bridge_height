@@ -161,16 +161,13 @@ elif page == "Engel Listesi":
 
 elif page == "Rota Planlayıcı":
 
-    buffer=10
-
     with st.form("route_planner_form"):
-        del_from = st.text_input("Başlangıç adresini girin:")
+        del_from = st.text_input("Başlangıç adresini giriniz:")
         del_to = st.text_input("Varış adresini girin:")
         vehicle_height = st.text_input("Araç yüksekliğini metre cinsinden girin:")
-        submitted = st.form_submit_button("Rotayı Planla", type="primary")
+    #     submitted = st.form_submit_button("Rotayı Planla", type="primary")
 
-    # ✅ Formun DIŞINDA işleme devam ediyoruz
-    if submitted:
+    # if submitted:
         if not del_from or not del_to or not vehicle_height:
             st.error("Lütfen tüm alanları doldurun.")
         else:
@@ -189,6 +186,8 @@ elif page == "Rota Planlayıcı":
                     # ✅ Shapely LineString (lon, lat formatında!)
                     route_line = LineString([(lng, lat) for lat, lng in route_points])
 
+                    buffer=10   # metre cinsinden
+
                     try:
                         df = read_obstacles()
                     except Exception:
@@ -202,7 +201,6 @@ elif page == "Rota Planlayıcı":
                         if distance_m <= buffer:
                             obstacles_on_route.append(row)
 
-                    # ✅ Harita artık submit sonrası formun DIŞINDA çiziliyor
                     if route_points:
                         m = folium.Map(location=route_points[0], zoom_start=12)
                         folium.PolyLine(route_points, color="blue", weight=5, opacity=0.7).add_to(m)
@@ -242,4 +240,3 @@ elif page == "Rota Planlayıcı":
                         st.success("Rotanızda engel bulunamadı.")
             except ValueError:
                 st.error("Araç yüksekliği bir sayı olmalıdır.")
-
