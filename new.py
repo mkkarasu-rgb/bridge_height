@@ -196,7 +196,7 @@ elif page == "Rota Planlayıcı":
                     for _, row in df.iterrows():
                         obstacle_point = Point(row["Boylam"], row["Enlem"])
                         distance_m = route_line.distance(obstacle_point) * 111_320  # derece → metre
-                        if distance_m <= 50:
+                        if distance_m <= 10:
                             obstacles_on_route.append(row)
 
                     if route_points:
