@@ -200,7 +200,7 @@ elif page=="Route Planner":
                     obstacles_on_route = []
                     for _, row in df.iterrows():
                         obstacle_loc = (row["Latitude"], row["Longitude"])
-                        # Check if obstacle is within 30 meters of any route point
+                        # Check if obstacle is within 50 meters of any route point
                         for pt in route_points:
                             if geodesic(obstacle_loc, pt).meters <= 50:
                                 obstacles_on_route.append(row)
