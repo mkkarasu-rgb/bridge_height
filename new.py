@@ -137,9 +137,9 @@ if page == "New Obstacle":
 
 elif page=="Obstacle Lists":
 
-    st.form_submit_button("Get the List")
+    st.form("Get the List")
 
-    if st.button("Refresh List", type="primary"):
+    if st.form_submit_button("Refresh List", type="primary"):
         try:
             df = read_obstacles()
         except Exception:
