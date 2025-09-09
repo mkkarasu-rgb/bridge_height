@@ -108,8 +108,8 @@ if page == "Yeni Engel":
 
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
-            # folium.Marker([lat, lon], popup=address).add_to(m)
-            # m.add_child(folium.LatLngPopup())
+            folium.Marker([lat, lon], popup=address).add_to(m)
+            m.add_child(folium.LatLngPopup())
             map_data = st_folium(m, height=300, width=700)
         else:
             map_data = None
