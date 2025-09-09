@@ -161,6 +161,7 @@ elif page == "Engel Listesi":
 
 elif page == "Rota Planlayıcı":
 
+    st.info("Shapely kullanılarak rota üzerindeki engeller kontrol ediliyor. Mavi daireler engel algılama yarıçapını (50m) gösterir.")
     with st.form("route_planner_form"):
         del_from = st.text_input("Başlangıç adresini girin:")
         del_to = st.text_input("Varış adresini girin:")
