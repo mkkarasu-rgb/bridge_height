@@ -137,18 +137,13 @@ if page == "New Obstacle":
 
 elif page=="Obstacle Lists":
 
-    # Initialize df to avoid undefined variable errors
-    df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+    try:
+        df = read_obstacles()
+    except Exception:
+        st.warning("No obstacles found. Add a new obstacle first.")
+        df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
 
-    with st.form("Get the List"):
-        if st.form_submit_button("Refresh List", type="primary"):
-            try:
-                df = read_obstacles()
-            except Exception as e:
-                st.warning(f"Error reading obstacles: {str(e)}. Using empty list.")
-                df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
-
-    # Display Obstacles on the Map (moved outside form for always-visible UI)
+    # Display Obstacles on the Map
     if not df.empty:
         m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=7)
         for _, obstacle in df.iterrows():
@@ -163,7 +158,6 @@ elif page=="Obstacle Lists":
     else:
         st.info("No obstacles to display on the map.")
 
-    # Data editor moved outside for consistent availability
     edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
 
     if st.button("Save Changes", type="primary"):
