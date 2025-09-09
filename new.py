@@ -186,6 +186,8 @@ elif page == "Rota Planlayıcı":
                     # ✅ Shapely LineString (lon, lat formatında!)
                     route_line = LineString([(lng, lat) for lat, lng in route_points])
 
+                    buffer=10   # metre cinsinden
+
                     try:
                         df = read_obstacles()
                     except Exception:
@@ -196,7 +198,7 @@ elif page == "Rota Planlayıcı":
                     for _, row in df.iterrows():
                         obstacle_point = Point(row["Boylam"], row["Enlem"])
                         distance_m = route_line.distance(obstacle_point) * 111_320  # derece → metre
-                        if distance_m <= 10:
+                        if distance_m <= buffer:
                             obstacles_on_route.append(row)
 
                     if route_points:
@@ -217,7 +219,7 @@ elif page == "Rota Planlayıcı":
 
                             folium.Circle(
                                 location=[row["Enlem"], row["Boylam"]],
-                                radius=50,
+                                radius=buffer,
                                 color="blue",
                                 weight=2,
                                 fill=True,
