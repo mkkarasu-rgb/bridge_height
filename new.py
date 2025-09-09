@@ -61,7 +61,7 @@ if not st.session_state.logged_in:
     st.subheader("Güzergah Yükseklik Kontrolü")
     username = st.text_input("Kullanıcı Adı")
     password = st.text_input("Şifre", type="password")
-    if st.button("Giriş Yap"):
+    if st.button("Giriş Yap", type="primary"):
         if username == "nst" and password == "nst":
             st.session_state.logged_in = True
             st.rerun()
@@ -118,7 +118,7 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-        if col3.button("Haritada Tıkla ve Engeli Kaydet", type="primary"):
+        if col3.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
