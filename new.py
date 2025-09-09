@@ -8,6 +8,7 @@ from streamlit_js_eval import get_geolocation
 from streamlit_folium import st_folium
 import gspread
 from google.oauth2.service_account import Credentials
+from shapely.geometry import LineString, Point  # ✅ eklendi
 
 # Google Sheets ayarları
 SHEET_NAME = "obstacles"          # Google Sheet'inizin adı
@@ -149,7 +150,6 @@ elif page == "Engel Listesi":
                 popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
                 icon=folium.Icon(color="red")
             ).add_to(m)
-        # st_folium(m, height=300, width=700)
     else:
         st.info("Haritada gösterilecek engel yok.")
 
@@ -167,25 +167,25 @@ elif page == "Rota Planlayıcı":
         vehicle_height = st.text_input("Araç yüksekliğini metre cinsinden girin:")
         submitted = st.form_submit_button("Rotayı Planla", type="primary")
 
-    # if submitted:
+    if submitted:
         if not del_from or not del_to or not vehicle_height:
             st.error("Lütfen tüm alanları doldurun.")
         else:
             try:
                 vehicle_height = float(vehicle_height)
-                # Google Directions API'den rota polilini al
                 directions = gmaps.directions(del_from, del_to, mode="driving")
                 if not directions:
                     st.error("Adresler arasında bir rota bulunamadı.")
                 else:
-                    # Polilini çöz ve rota koordinatlarını al
                     steps = directions[0]['legs'][0]['steps']
                     route_points = []
                     for step in steps:
                         points = googlemaps.convert.decode_polyline(step['polyline']['points'])
                         route_points.extend([(p['lat'], p['lng']) for p in points])
 
-                    # Engelleri yükle
+                    # ✅ Shapely LineString (lon, lat formatında!)
+                    route_line = LineString([(lng, lat) for lat, lng in route_points])
+
                     try:
                         df = read_obstacles()
                     except Exception:
@@ -194,36 +194,37 @@ elif page == "Rota Planlayıcı":
 
                     obstacles_on_route = []
                     for _, row in df.iterrows():
-                        obstacle_loc = (row["Enlem"], row["Boylam"])
-                        # Engel rota noktasına 50 metreden yakın mı kontrol et
-                        for pt in route_points:
-                            if geodesic(obstacle_loc, pt).meters <= 10:
-                                obstacles_on_route.append(row)
-                                break
+                        obstacle_point = Point(row["Boylam"], row["Enlem"])
+                        distance_m = route_line.distance(obstacle_point) * 111_320  # derece → metre
+                        if distance_m <= 50:
+                            obstacles_on_route.append(row)
 
-                    # Rota ve engelleri haritada göster
                     if route_points:
                         m = folium.Map(location=route_points[0], zoom_start=12)
                         folium.PolyLine(route_points, color="blue", weight=5, opacity=0.7).add_to(m)
+
                         for _, row in df.iterrows():
                             color = "red" if any(
-                                (row["Enlem"], row["Boylam"]) == (obs["Enlem"], obs["Boylam"])
+                                (row["Engel Adı"] == obs["Engel Adı"])
                                 for _, obs in pd.DataFrame(obstacles_on_route).iterrows()
                             ) else "green"
+
                             folium.Marker(
                                 [row["Enlem"], row["Boylam"]],
                                 popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
                                 icon=folium.Icon(color=color)
                             ).add_to(m)
+
                             folium.Circle(
-                            location=[row["Enlem"], row["Boylam"]],
-                            radius= 50,  # metre cinsinden
-                            color="blue",         # kenar rengi
-                            weight=2,             # kenar kalınlığı
-                            fill=True,
-                            fill_color="blue",
-                            fill_opacity=0.3
-                        ).add_to(m)
+                                location=[row["Enlem"], row["Boylam"]],
+                                radius=50,
+                                color="blue",
+                                weight=2,
+                                fill=True,
+                                fill_color="blue",
+                                fill_opacity=0.3
+                            ).add_to(m)
+
                         st_folium(m, height=300, width=700)
 
                     if obstacles_on_route:
