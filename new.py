@@ -165,9 +165,9 @@ elif page == "Rota Planlayıcı":
         del_from = st.text_input("Başlangıç adresini giriniz:")
         del_to = st.text_input("Varış adresini girin:")
         vehicle_height = st.text_input("Araç yüksekliğini metre cinsinden girin:")
-        submitted = st.form_submit_button("Rotayı Planla", type="primary")
+    #     submitted = st.form_submit_button("Rotayı Planla", type="primary")
 
-    if submitted:
+    # if submitted:
         if not del_from or not del_to or not vehicle_height:
             st.error("Lütfen tüm alanları doldurun.")
         else:
