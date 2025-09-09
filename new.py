@@ -86,19 +86,6 @@ if page == "Yeni Engel":
         col1.text_input("Engel adı girin:", key="obstacle_name")
         col2.text_input("Engel yüksekliğini metre cinsinden girin:", key="obstacle_height")
 
-        if col3.button("Engeli Kaydet", type="primary"):
-            obstacle_name = st.session_state.get("obstacle_name", "")
-            obstacle_height = st.session_state.get("obstacle_height", "")
-            if not obstacle_name or not obstacle_height or not lat or not lon:
-                st.toast("Lütfen tüm alanları doldurun ve konumun ayarlandığından emin olun.", icon="❌")
-            else:
-                try:
-                    obstacle_height = float(obstacle_height)
-                    save_obstacle(obstacle_name, obstacle_height, lat, lon)
-                    st.toast("Engel Kaydedildi!", icon="✅")
-                except ValueError:
-                    st.error("Yükseklik bir sayı olmalıdır.")
-                    
         lat, lon = None, None
         if address:
             geocode_result = gmaps.geocode(address)
@@ -130,7 +117,18 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-
+        if col3.button("Engeli Kaydet", type="primary"):
+            obstacle_name = st.session_state.get("obstacle_name", "")
+            obstacle_height = st.session_state.get("obstacle_height", "")
+            if not obstacle_name or not obstacle_height or not lat or not lon:
+                st.toast("Lütfen tüm alanları doldurun ve konumun ayarlandığından emin olun.", icon="❌")
+            else:
+                try:
+                    obstacle_height = float(obstacle_height)
+                    save_obstacle(obstacle_name, obstacle_height, lat, lon)
+                    st.toast("Engel Kaydedildi!", icon="✅")
+                except ValueError:
+                    st.error("Yükseklik bir sayı olmalıdır.")
 
 elif page == "Engel Listesi":
 
