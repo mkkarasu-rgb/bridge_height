@@ -79,6 +79,7 @@ page = st.selectbox(
 
 if page == "Yeni Engel":
 
+    st.rerun()
     with st.expander("Yeni engel ekle", expanded=True):
 
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
