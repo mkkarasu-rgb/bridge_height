@@ -197,7 +197,7 @@ elif page == "Rota Planlayıcı":
                         obstacle_loc = (row["Enlem"], row["Boylam"])
                         # Engel rota noktasına 50 metreden yakın mı kontrol et
                         for pt in route_points:
-                            if geodesic(obstacle_loc, pt).meters <= 25:
+                            if geodesic(obstacle_loc, pt).meters <= 10:
                                 obstacles_on_route.append(row)
                                 break
 
