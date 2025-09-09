@@ -100,26 +100,22 @@ if page == "Yeni Engel":
             if lat is not None and lon is not None:
                 address = "Buradasınız"
 
-        map_data = None
+        if lat is None or lon is None:
+            st.info("Adres Google Haritalar'da bulunamadı.")
+            m = None
+
         if lat is not None and lon is not None:
-            # İlk haritayı çiz
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=400, width=700)
-
-            # Eğer kullanıcı haritadan tıkladıysa, yeni marker koy
-            if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
-                lat = map_data["last_clicked"]["lat"]
-                lon = map_data["last_clicked"]["lng"]
-
-                m = folium.Map(location=[lat, lon], zoom_start=15)
-                folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
-                m.add_child(folium.LatLngPopup())
-
-                map_data = st_folium(m, height=400, width=700)
+            map_data = st_folium(m, height=300, width=700)
         else:
-            st.info("Adres bulunamadı veya konum alınamadı. Lütfen adres girin ya da haritadan konum seçin.")
+            map_data = None
+        if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
+            lat = map_data["last_clicked"]["lat"]
+            lon = map_data["last_clicked"]["lng"]
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
         if st.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
@@ -133,7 +129,6 @@ if page == "Yeni Engel":
                     st.toast("Engel Kaydedildi!", icon="✅")
                 except ValueError:
                     st.error("Yükseklik bir sayı olmalıdır.")
-
 
 elif page == "Engel Listesi":
 
@@ -222,7 +217,7 @@ elif page == "Rota Planlayıcı":
                             ).add_to(m)
                             folium.Circle(
                             location=[row["Enlem"], row["Boylam"]],
-                            radius=50,  # metre cinsinden
+                            radius= 50,  # metre cinsinden
                             color="blue",         # kenar rengi
                             weight=2,             # kenar kalınlığı
                             fill=True,
