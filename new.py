@@ -82,7 +82,7 @@ if page == "Yeni Engel":
     with st.expander("Yeni engel ekle", expanded=True):
 
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
-        col1, col2 = st.columns(2)
+        col1, col2, col3 = st.columns(3)
         col1.text_input("Engel adı girin:", key="obstacle_name")
         col2.text_input("Engel yüksekliğini metre cinsinden girin:", key="obstacle_height")
 
@@ -117,7 +117,7 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-        if st.button("Engeli Kaydet", type="primary"):
+        if col3.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
