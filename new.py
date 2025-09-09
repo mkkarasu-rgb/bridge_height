@@ -224,7 +224,7 @@ elif page == "Rota Planlayıcı":
                             if obs["Yükseklik (m)"] < vehicle_height:
                                 st.error(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - ARACINIZDAN DÜŞÜK!")
                             else:
-                                st.success(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - Güvenli.")
+                                st.success(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - Güvenli")
                     else:
                         st.success("Rotanızda engel bulunamadı.")
             except ValueError:
