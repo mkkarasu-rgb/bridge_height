@@ -202,7 +202,7 @@ elif page=="Route Planner":
                         obstacle_loc = (row["Latitude"], row["Longitude"])
                         # Check if obstacle is within 15 meters of any route point
                         for pt in route_points:
-                            if geodesic(obstacle_loc, pt).meters <= 15:
+                            if geodesic(obstacle_loc, pt).meters <= 150:
                                 obstacles_on_route.append(row)
                                 break
 
