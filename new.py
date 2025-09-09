@@ -101,8 +101,13 @@ if page == "Yeni Engel":
                 address = "Buradasınız"
 
         if lat is None or lon is None:
-            st.info("Adres Google Haritalar'da bulunamadı.")
-            m = None
+            st.info("Konum alınamadı, lütfen adres girin ya da haritadan nokta seçin.")
+            map_data = None
+        else:
+            m = folium.Map(location=[lat, lon], zoom_start=15)
+            folium.Marker([lat, lon], popup=address).add_to(m)
+            m.add_child(folium.LatLngPopup())
+            map_data = st_folium(m, height=400, width=700)
 
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
