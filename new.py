@@ -86,7 +86,8 @@ if page == "Yeni Engel":
         col1, col2 = st.columns(2,vertical_alignment="center")
         col1.text_input("Engel adı girin:", key="obstacle_name")
         col2.text_input("Engel yüksekliğini girin (m):", key="obstacle_height")
-
+        col3,col4= st.columns([3,1],vertical_alignment="center")
+        
         lat, lon = None, None
         if address:
             geocode_result = gmaps.geocode(address)
@@ -118,7 +119,7 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-        col3,col4= st.columns([3,1],vertical_alignment="center")
+
         col3.info('Haritada kesin konumu taklayın ve kaydet butonuna basın!')
         if col4.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
