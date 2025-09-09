@@ -137,32 +137,35 @@ if page == "New Obstacle":
 
 elif page=="Obstacle Lists":
 
-    try:
-        df = read_obstacles()
-    except Exception:
-        st.warning("No obstacles found. Add a new obstacle first.")
-        df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
+    st.form_submit_button("Get the List")
 
-    # Display Obstacles on the Map
-    if not df.empty:
-        m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=7)
-        for _, obstacle in df.iterrows():
-            if pd.isna(obstacle["Latitude"]) or pd.isna(obstacle["Longitude"]):
-                continue
-            folium.Marker(
-                [obstacle["Latitude"], obstacle["Longitude"]],
-                popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
-                icon=folium.Icon(color="red")
-            ).add_to(m)
-        st_folium(m, height=300, width=700)
-    else:
-        st.info("No obstacles to display on the map.")
+    if st.button("Refresh List", type="primary"):
+        try:
+            df = read_obstacles()
+        except Exception:
+            st.warning("No obstacles found. Add a new obstacle first.")
+            df = pd.DataFrame(columns=["Obstacle Name", "Height (m)", "Latitude", "Longitude"])
 
-    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+        # Display Obstacles on the Map
+        if not df.empty:
+            m = folium.Map(location=[df["Latitude"].mean(), df["Longitude"].mean()] if not df["Latitude"].isnull().all() else [0, 0], zoom_start=7)
+            for _, obstacle in df.iterrows():
+                if pd.isna(obstacle["Latitude"]) or pd.isna(obstacle["Longitude"]):
+                    continue
+                folium.Marker(
+                    [obstacle["Latitude"], obstacle["Longitude"]],
+                    popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
+                    icon=folium.Icon(color="red")
+                ).add_to(m)
+            st_folium(m, height=300, width=700)
+        else:
+            st.info("No obstacles to display on the map.")
 
-    if st.button("Save Changes", type="primary"):
-        save_all_obstacles(edited_df)
-        st.toast("Changes SAVED!", icon="✅")
+        edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+
+        if st.button("Save Changes", type="primary"):
+            save_all_obstacles(edited_df)
+            st.toast("Changes SAVED!", icon="✅")
 
 elif page=="Route Planner":
 
