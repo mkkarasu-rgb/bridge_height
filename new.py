@@ -126,7 +126,7 @@ if page == "Yeni Engel":
             obstacle_height = st.session_state.get("obstacle_height", "")
 
         # Konum girilmiş mi kontrolü
-            if not map_data["last_clicked"]["lat"] or not map_data["last_clicked"]["lng"]:
+            if not lat or not lon:
                 st.toast("Lütfen haritada bir konum seçin.", icon="❌")
             # Diğer alanlar dolu mu kontrolü
             elif not obstacle_name or not obstacle_height:
