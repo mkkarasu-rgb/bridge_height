@@ -23,10 +23,7 @@ creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 gc = gspread.authorize(creds)
 
 def get_worksheet():
-    try:
-        sh = gc.open(SHEET_NAME)
-    except gspread.SpreadsheetNotFound:
-        sh = gc.create(SHEET_NAME)
+    sh = gc.open(SHEET_NAME)  # Just open the existing sheet; don't try to create
     try:
         ws = sh.worksheet(WORKSHEET_NAME)
     except gspread.WorksheetNotFound:
