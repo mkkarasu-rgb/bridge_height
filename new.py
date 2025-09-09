@@ -50,14 +50,14 @@ def save_all_obstacles(df):
 # API anahtarınızı st.secrets'tan alın
 gmaps = googlemaps.Client(key='AIzaSyCw6dw7UN52WgKsXZO3Cevx_ymoa8PPd2w')
 
-st.set_page_config(page_title="Köprü Yüksekliği Kontrolü", layout="centered", page_icon="🚛")
+st.set_page_config(page_title="Güzerhah Yükseklik Kontrolü", layout="centered", page_icon="🚛")
 
 # Kimlik Doğrulama
 if 'logged_in' not in st.session_state:
     st.session_state.logged_in = False
 
 if not st.session_state.logged_in:
-    st.subheader("Köprü Yüksekliği Kontrolü Girişi")
+    st.subheader("Güzergah Yükseklik Kontrolü")
     username = st.text_input("Kullanıcı Adı")
     password = st.text_input("Şifre", type="password")
     if st.button("Giriş Yap"):
