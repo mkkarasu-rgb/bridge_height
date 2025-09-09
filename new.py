@@ -154,7 +154,7 @@ elif page=="Obstacle Lists":
                 popup=f"{obstacle['Obstacle Name']} ({obstacle['Height (m)']}m)",
                 icon=folium.Icon(color="red")
             ).add_to(m)
-        st_folium(m, height=300, width=700)
+        # st_folium(m, height=300, width=700)
     else:
         st.info("No obstacles to display on the map.")
 
