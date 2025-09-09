@@ -215,7 +215,7 @@ elif page == "Rota Planlayıcı":
                                 popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
                                 icon=folium.Icon(color=color)
                             ).add_to(m)
-                            folium.Circle(
+                            folium.CircleMarker(
                                 location=[row["Enlem"], row["Boylam"]],
                                 radius=50,
                                 color=color,
