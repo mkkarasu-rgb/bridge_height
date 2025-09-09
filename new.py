@@ -85,7 +85,7 @@ if page == "Yeni Engel":
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
         col1, col2, col3 = st.columns(3)
         col1.text_input("Engel adı girin:", key="obstacle_name")
-        col2.text_input("Engel yüksekliğini metre cinsinden girin:", key="obstacle_height")
+        col2.text_input("Engel yüksekliğini girin (m):", key="obstacle_height")
 
         lat, lon = None, None
         if address:
