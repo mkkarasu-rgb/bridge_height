@@ -218,10 +218,12 @@ elif page == "Rota Planlayıcı":
                             folium.Circle(
                             location=[row["Enlem"], row["Boylam"]],
                             radius=50,  # metre cinsinden
-                            color="red" if color == "red" else "green",
+                            color="blue",         # kenar rengi
+                            weight=2,             # kenar kalınlığı
                             fill=True,
-                            fill_opacity=0.2
-                            ).add_to(m)
+                            fill_color="blue",
+                            fill_opacity=0.3
+                        ).add_to(m)
                         st_folium(m, height=300, width=700)
 
                     if obstacles_on_route:
