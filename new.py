@@ -162,7 +162,7 @@ elif page == "Engel Listesi":
 elif page == "Rota Planlayıcı":
 
     with st.form("route_planner_form"):
-        del_from = st.text_input("Başlangıç adresini giriniz:")
+        del_from = st.text_input("Başlangıç adresini girin:")
         del_to = st.text_input("Varış adresini girin:")
         vehicle_height = st.text_input("Araç yüksekliğini metre cinsinden girin:")
         submitted = st.form_submit_button("Rotayı Planla", type="primary")
