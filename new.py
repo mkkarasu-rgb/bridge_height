@@ -83,7 +83,7 @@ if page == "Yeni Engel":
     with st.expander("Yeni engel ekle", expanded=True):
 
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
-        col1, col2, col3 = st.columns([3, 3, 2],vertical_alignment="center")
+        col1, col2, col3 = st.columns([3, 3, 3],vertical_alignment="center")
         col1.text_input("Engel adı girin:", key="obstacle_name")
         col2.text_input("Engel yüksekliğini girin (m):", key="obstacle_height")
 
