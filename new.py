@@ -227,7 +227,7 @@ elif page == "Rota Planlayıcı":
                                 fill_opacity=0.3
                             ).add_to(m)
 
-                        # st_folium(m, height=300, width=700)
+                    st_folium(m, height=300, width=700)
 
                     if obstacles_on_route:
                         st.warning("Rotanızda engeller tespit edildi:")
@@ -241,4 +241,4 @@ elif page == "Rota Planlayıcı":
             except ValueError:
                 st.error("Araç yüksekliği bir sayı olmalıdır.")
 
-    st_folium(m, height=300, width=700)
+    
