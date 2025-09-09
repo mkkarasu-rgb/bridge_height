@@ -215,13 +215,6 @@ elif page == "Rota Planlayıcı":
                                 popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
                                 icon=folium.Icon(color=color)
                             ).add_to(m)
-                            folium.CircleMarker(
-                                location=[row["Enlem"], row["Boylam"]],
-                                radius=50,
-                                color=color,
-                                fill=True,
-                                fill_opacity=0.7
-                            ).add_to(m)
                         st_folium(m, height=300, width=700)
 
                     if obstacles_on_route:
