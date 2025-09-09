@@ -165,9 +165,9 @@ elif page == "Rota Planlayıcı":
         del_from = st.text_input("Başlangıç adresini giriniz:")
         del_to = st.text_input("Varış adresini girin:")
         vehicle_height = st.text_input("Araç yüksekliğini metre cinsinden girin:")
-    #     submitted = st.form_submit_button("Rotayı Planla", type="primary")
+        submitted = st.form_submit_button("Rotayı Planla", type="primary")
 
-    # if submitted:
+    if submitted:
         if not del_from or not del_to or not vehicle_height:
             st.error("Lütfen tüm alanları doldurun.")
         else:
@@ -227,7 +227,7 @@ elif page == "Rota Planlayıcı":
                                 fill_opacity=0.3
                             ).add_to(m)
 
-                        st_folium(m, height=300, width=700)
+                        # st_folium(m, height=300, width=700)
 
                     if obstacles_on_route:
                         st.warning("Rotanızda engeller tespit edildi:")
@@ -240,3 +240,5 @@ elif page == "Rota Planlayıcı":
                         st.success("Rotanızda engel bulunamadı.")
             except ValueError:
                 st.error("Araç yüksekliği bir sayı olmalıdır.")
+
+    st_folium(m, height=300, width=700)
