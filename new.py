@@ -118,8 +118,9 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-        col1.info('Haritada kesin konumu taklayın ve kaydet butonuna basın!')
-        if col2.button("Engeli Kaydet", type="primary"):
+        col3,col4= st.columns([3,1],vertical_alignment="center")
+        col3.info('Haritada kesin konumu taklayın ve kaydet butonuna basın!')
+        if col4.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
             if not obstacle_name or not obstacle_height or not lat or not lon:
