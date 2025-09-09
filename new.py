@@ -220,7 +220,7 @@ elif page == "Rota Planlayıcı":
                                 radius=50,
                                 color=color,
                                 fill=True,
-                                fill_opacity=0.2
+                                fill_opacity=0.7
                             ).add_to(m)
                         st_folium(m, height=300, width=700)
 
