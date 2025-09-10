@@ -83,12 +83,12 @@ selected = st.columns(len(menu_options))
 page = None
 for i, option in enumerate(menu_options):
     if selected[i].button(option, use_container_width=True):
-        page= option
+        st.session_state["page"] = option
 
 # -------------------------
 # Yeni Engel Sayfası
 # -------------------------
-if page == "Yeni Engel":
+if st.session_state["page"] == "Yeni Engel":
     with st.expander("Yeni engel ekle", expanded=True):
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
         col1, col2 = st.columns(2, vertical_alignment="center")
