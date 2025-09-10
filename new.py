@@ -79,12 +79,23 @@ if not st.session_state.logged_in:
 # Menü
 # -------------------------
 menu_options = ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"]
+
 if "page" not in st.session_state:
     st.session_state["page"] = menu_options[2]  # varsayılan sayfa
-selected = st.columns(len(menu_options))
-page = None
+
+cols = st.columns(len(menu_options))
 for i, option in enumerate(menu_options):
-    if selected[i].button(option, use_container_width=True):
+    # Seçili sayfa primary, diğerleri secondary renk
+    if option == st.session_state["page"]:
+        btn_color = "#0d6efd"  # primary (mavi)
+        text_color = "white"
+    else:
+        btn_color = "#6c757d"  # secondary (gri)
+        text_color = "white"
+
+    # button yerine st.markdown + HTML kullanıyoruz
+    clicked = cols[i].button(option, key=option)
+    if clicked:
         st.session_state["page"] = option
 
 # -------------------------
