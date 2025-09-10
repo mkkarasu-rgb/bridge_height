@@ -286,7 +286,7 @@ elif page == "Rota Planlayıcı":
 
                         # form submit sonrası sayfa yenileyip seçimi göstermek için
                         st.success("Rotalar alındı — aşağıdan bir rota seçin veya tümünü gösterin.")
-                        st.experimental_rerun()
+                        st.rerun()
 
     # formun hemen altında: eğer daha önce rotalar alınmışsa, göster ve seçilebilsin
     if "route_data" in st.session_state:
