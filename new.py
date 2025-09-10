@@ -83,7 +83,7 @@ selected = st.columns(len(menu_options))
 page = None
 for i, option in enumerate(menu_options):
     if selected[i].button(option, use_container_width=True):
-        st.session_state["page"] = option
+        page= option
 
 # -------------------------
 # Yeni Engel Sayfası
