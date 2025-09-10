@@ -84,7 +84,7 @@ if "page" not in st.session_state:
 selected = st.columns(len(menu_options))
 page = None
 for i, option in enumerate(menu_options):
-    if selected[i].button(option, use_container_width=True):
+    if selected[i].button(option, use_container_width=True, type="primary" if st.session_state["page"] == option else "secondary"):
         st.session_state["page"] = option
 
 # -------------------------
