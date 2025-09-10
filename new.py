@@ -148,7 +148,7 @@ if st.session_state["page"] == "Yeni Engel":
 # -------------------------
 # Engel Listesi Sayfası
 # -------------------------
-elif page == "Engel Listesi":
+elif st.session_state["page"] == "Engel Listesi":
     try:
         df = read_obstacles()
     except Exception:
@@ -177,7 +177,7 @@ elif page == "Engel Listesi":
 # -------------------------
 # Rota Planlayıcı Sayfası
 # -------------------------
-elif page == "Rota Planlayıcı":
+elif st.session_state["page"] == "Rota Planlayıcı":
 
     # Form ile rota isteği
     with st.form("route_planner_form"):
