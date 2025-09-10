@@ -154,6 +154,11 @@ elif page == "Engel Listesi":
         st.warning("Engel bulunamadı. Önce yeni bir engel ekleyin.")
         df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
 
+    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
+    if st.button("Değişiklikleri Kaydet", type="primary"):
+        save_all_obstacles(edited_df)
+        st.toast("Değişiklikler KAYDEDİLDİ!", icon="✅")
+
     if not df.empty:
         m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7)
         for _, obstacle in df.iterrows():
@@ -167,11 +172,6 @@ elif page == "Engel Listesi":
         st_folium(m, height=400, width=800)
     else:
         st.info("Haritada gösterilecek engel yok.")
-
-    edited_df = st.data_editor(df, num_rows="dynamic", use_container_width=True)
-    if st.button("Değişiklikleri Kaydet", type="primary"):
-        save_all_obstacles(edited_df)
-        st.toast("Değişiklikler KAYDEDİLDİ!", icon="✅")
 
 # -------------------------
 # Rota Planlayıcı Sayfası
