@@ -117,7 +117,7 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=300, width=700)
+            map_data = st_folium(m, height=400, width=700)
         else:
             map_data = None
 
@@ -404,4 +404,4 @@ elif page == "Rota Planlayıcı":
 
         # haritayı göster
         map_html = m._repr_html_()
-        html(map_html, height=500, width=900)
+        html(map_html, height=400, width=700)
