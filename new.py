@@ -78,11 +78,12 @@ if not st.session_state.logged_in:
 # -------------------------
 # Menü
 # -------------------------
-page = st.selectbox(
-    "MENÜ:",
-    ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"],
-    index=2  # default Rota Planlayıcı gösterilsin isterseniz değiştirin
-)
+menu_options = ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"]
+selected = st.columns(len(menu_options))
+page = None
+for i, option in enumerate(menu_options):
+    if selected[i].button(option, use_container_width=True):
+        st.session_state["page"] = option
 
 # -------------------------
 # Yeni Engel Sayfası
