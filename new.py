@@ -55,7 +55,7 @@ def save_all_obstacles(df):
 # -------------------------
 gmaps = googlemaps.Client(key=st.secrets["gmapsapi"])
 
-st.set_page_config(page_title="Guzerhah Yükseklik Kontrolü", layout="centered", page_icon="🚛")
+st.set_page_config(page_title="Güzergah Yükseklik Kontrolü", layout="centered", page_icon="🚛")
 
 # -------------------------
 # Basit Kimlik Doğrulama
