@@ -271,8 +271,8 @@ elif page == "Rota Planlayıcı":
                                 "Rota": f"Alternatif Rota {idx+1}",
                                 "Mesafe": distance_text,
                                 "Süre": duration_text,
-                                "Toplam Engel": len(obstacles_on_route),
-                                "Araç için Tehlikeli Engel Sayısı": blocking_count,
+                                "Engel": len(obstacles_on_route),
+                                "Tehlikeli Engel": blocking_count,
                                 "Engeller": obstacle_list_str
                             })
 
