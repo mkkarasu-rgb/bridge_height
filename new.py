@@ -78,38 +78,14 @@ if not st.session_state.logged_in:
 # -------------------------
 # Menü
 # -------------------------
-import streamlit as st
-
 menu_options = ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"]
-
 if "page" not in st.session_state:
     st.session_state["page"] = menu_options[2]  # varsayılan sayfa
-
-cols = st.columns(len(menu_options))
+selected = st.columns(len(menu_options))
+page = None
 for i, option in enumerate(menu_options):
-    # Seçili sayfa için renk
-    if option == st.session_state["page"]:
-        color = "#0d6efd"  # primary mavi
-        text_color = "white"
-    else:
-        color = "#6c757d"  # secondary gri
-        text_color = "white"
-
-    # Buton HTML ile stil veriyoruz
-    if cols[i].button(option, key=option):
+    if selected[i].button(option, use_container_width=True, type="primary"):
         st.session_state["page"] = option
-
-    # CSS ile renk vermek için
-    st.markdown(f"""
-        <style>
-        div[role="button"] > button[kind="primary"]:nth-child({i+1}) {{
-            background-color: {color};
-            color: {text_color};
-        }}
-        </style>
-        """, unsafe_allow_html=True)
-
-
 
 # -------------------------
 # Yeni Engel Sayfası
