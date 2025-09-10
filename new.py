@@ -87,6 +87,7 @@ for i, option in enumerate(menu_options):
     if selected[i].button(option, use_container_width=True):
         st.session_state["page"] = option
         button_type = "primary" if st.session_state["page"] == option else "secondary"
+        selected[i].button(option, use_container_width=True, type=button_type)
 
 # -------------------------
 # Yeni Engel Sayfası
