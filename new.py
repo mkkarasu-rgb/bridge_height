@@ -79,6 +79,8 @@ if not st.session_state.logged_in:
 # Menü
 # -------------------------
 menu_options = ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"]
+if "page" not in st.session_state:
+    st.session_state["page"] = menu_options[2]  # varsayılan sayfa
 selected = st.columns(len(menu_options))
 page = None
 for i, option in enumerate(menu_options):
