@@ -78,19 +78,16 @@ if not st.session_state.logged_in:
 # -------------------------
 # Menü
 # -------------------------
-menu_options = ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"]
-if "page" not in st.session_state:
-    st.session_state["page"] = menu_options[2]  # varsayılan sayfa
-selected = st.columns(len(menu_options))
-page = None
-for i, option in enumerate(menu_options):
-    if selected[i].button(option, use_container_width=True, type="primary"):
-        st.session_state["page"] = option
+page = st.selectbox(
+    "MENÜ:",
+    ["Yeni Engel", "Engel Listesi", "Rota Planlayıcı"],
+    index=2  # default Rota Planlayıcı gösterilsin isterseniz değiştirin
+)
 
 # -------------------------
 # Yeni Engel Sayfası
 # -------------------------
-if st.session_state["page"] == "Yeni Engel":
+if page == "Yeni Engel":
     with st.expander("Yeni engel ekle", expanded=True):
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
         col1, col2 = st.columns(2, vertical_alignment="center")
@@ -150,7 +147,7 @@ if st.session_state["page"] == "Yeni Engel":
 # -------------------------
 # Engel Listesi Sayfası
 # -------------------------
-elif st.session_state["page"] == "Engel Listesi":
+elif page == "Engel Listesi":
     try:
         df = read_obstacles()
     except Exception:
@@ -179,7 +176,7 @@ elif st.session_state["page"] == "Engel Listesi":
 # -------------------------
 # Rota Planlayıcı Sayfası
 # -------------------------
-elif st.session_state["page"] == "Rota Planlayıcı":
+elif page == "Rota Planlayıcı":
 
     # Form ile rota isteği
     with st.form("route_planner_form"):
