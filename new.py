@@ -159,19 +159,19 @@ elif page == "Engel Listesi":
         save_all_obstacles(edited_df)
         st.toast("Değişiklikler KAYDEDİLDİ!", icon="✅")
 
-    if not df.empty:
-        m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7)
-        for _, obstacle in df.iterrows():
-            if pd.isna(obstacle["Enlem"]) or pd.isna(obstacle["Boylam"]):
-                continue
-            folium.Marker(
-                [obstacle["Enlem"], obstacle["Boylam"]],
-                popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
-                icon=folium.Icon(color="red")
-            ).add_to(m)
-        st_folium(m, height=400, width=800)
-    else:
-        st.info("Haritada gösterilecek engel yok.")
+    # if not df.empty:
+    #     m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7)
+    #     for _, obstacle in df.iterrows():
+    #         if pd.isna(obstacle["Enlem"]) or pd.isna(obstacle["Boylam"]):
+    #             continue
+    #         folium.Marker(
+    #             [obstacle["Enlem"], obstacle["Boylam"]],
+    #             popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
+    #             icon=folium.Icon(color="red")
+    #         ).add_to(m)
+    #     st_folium(m, height=400, width=800)
+    # else:
+    #     st.info("Haritada gösterilecek engel yok.")
 
 # -------------------------
 # Rota Planlayıcı Sayfası
