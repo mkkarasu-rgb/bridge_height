@@ -299,7 +299,7 @@ elif page == "Rota Planlayıcı":
 
         # Özet tabloyu göster
         df_summary = pd.DataFrame(route_summaries)
-        st.markdown("### Rota Özeti")
+        # st.markdown("### Rota Özeti")
         st.dataframe(df_summary, use_container_width=True, hide_index=True)
 
         # rota seçim dropdown (form dışında, anında etki)
