@@ -269,7 +269,7 @@ elif page == "Rota Planlayıcı":
                             obstacle_list_str = "; ".join([f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m)" for obs in obstacles_on_route])
 
                             route_summaries.append({
-                                "Rota": f"Alternatif Rota {idx+1}",
+                                "Rota": f"Rota {idx+1}",
                                 "Mesafe": distance_text,
                                 "Süre": duration_text,
                                 "Engel": len(obstacles_on_route),
@@ -303,7 +303,7 @@ elif page == "Rota Planlayıcı":
         st.dataframe(df_summary, use_container_width=True, hide_index=True)
 
         # rota seçim dropdown (form dışında, anında etki)
-        rota_options = ["Tüm rotalar"] + [f"Alternatif Rota {i+1}" for i in range(len(directions))]
+        rota_options = ["Tüm rotalar"] + [f"Rota {i+1}" for i in range(len(directions))]
         rota_secim = st.selectbox("Gösterilecek rota:", rota_options, key="rota_secim_selector")
 
         # haritayı oluştur
@@ -317,7 +317,7 @@ elif page == "Rota Planlayıcı":
         if rota_secim == "Tüm rotalar":
             displayed_idx = list(range(len(directions)))
         else:
-            # "Alternatif Rota N" -> extract N
+            # "Rota N" -> extract N
             try:
                 n = int(rota_secim.split()[-1])
                 displayed_idx = [n-1]
