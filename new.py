@@ -49,7 +49,7 @@ def save_all_obstacles(df):
         ws.append_row([row["Engel Adı"], row["Yükseklik (m)"], row["Enlem"], row["Boylam"]])
 
 # API anahtarınızı st.secrets'tan alın
-gmaps = googlemaps.Client(key=st.secrets["gmapapi"])
+gmaps = googlemaps.Client(key=st.secrets["gmapsapi"])
 
 st.set_page_config(page_title="Güzerhah Yükseklik Kontrolü", layout="centered", page_icon="🚛")
 
