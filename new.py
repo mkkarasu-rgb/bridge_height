@@ -117,7 +117,7 @@ if page == "Yeni Engel":
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
-            map_data = st_folium(m, height=500, width=700)
+            map_data = st_folium(m, height=400, width=700)
         else:
             map_data = None
 
@@ -169,7 +169,7 @@ elif page == "Engel Listesi":
     #             popup=f"{obstacle['Engel Adı']} ({obstacle['Yükseklik (m)']}m)",
     #             icon=folium.Icon(color="red")
     #         ).add_to(m)
-    #     st_folium(m, height=500, width=800)
+    #     st_folium(m, height=400, width=800)
     # else:
     #     st.info("Haritada gösterilecek engel yok.")
 
@@ -404,4 +404,4 @@ elif page == "Rota Planlayıcı":
 
         # haritayı göster
         map_html = m._repr_html_()
-        html(map_html, height=500, width=700)
+        html(map_html, height=400, width=700)
