@@ -9,6 +9,7 @@ from streamlit_folium import st_folium
 import gspread
 from google.oauth2.service_account import Credentials
 from shapely.geometry import LineString, Point
+from streamlit.components.v1 import html
 
 # -------------------------
 # Ayarlar / Google Sheets
@@ -402,4 +403,4 @@ elif page == "Rota Planlayıcı":
             ).add_to(m)
 
         # haritayı göster
-        st_folium(m, height=500, width=900)
+        st_folium(m, height=500, width=900, key="route_map")
