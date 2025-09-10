@@ -403,4 +403,5 @@ elif page == "Rota Planlayıcı":
             ).add_to(m)
 
         # haritayı göster
-        st_folium(m, height=500, width=900, key="route_map")
+        map_html = m._repr_html_()
+        html(map_html, height=500, width=900)
