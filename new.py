@@ -297,9 +297,9 @@ elif page == "Rota Planlayıcı":
         vehicle_height_val = data["vehicle_height"]
 
         # Özet tabloyu göster
-        df_summary = pd.DataFrame(route_summaries,hide_index=True)
+        df_summary = pd.DataFrame(route_summaries)
         st.markdown("### Rota Özeti")
-        st.dataframe(df_summary, use_container_width=True)
+        st.dataframe(df_summary, use_container_width=True, hide_index=True)
 
         # rota seçim dropdown (form dışında, anında etki)
         rota_options = ["Tüm rotalar"] + [f"Alternatif Rota {i+1}" for i in range(len(directions))]
