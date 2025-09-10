@@ -49,7 +49,7 @@ def save_all_obstacles(df):
         ws.append_row([row["Engel Adı"], row["Yükseklik (m)"], row["Enlem"], row["Boylam"]])
 
 # API anahtarınızı st.secrets'tan alın
-gmaps = googlemaps.Client(key='AIzaSyCw6dw7UN52WgKsXZO3Cevx_ymoa8PPd2w')
+gmaps = googlemaps.Client(key='YOUR_GOOGLE_MAPS_API_KEY')
 
 st.set_page_config(page_title="Güzerhah Yükseklik Kontrolü", layout="centered", page_icon="🚛")
 
@@ -78,8 +78,8 @@ page = st.selectbox(
     key="main_menu"
 )
 
+# ✅ Yeni Engel Sayfası
 if page == "Yeni Engel":
-
     with st.expander("Yeni engel ekle", expanded=True):
 
         address = st.text_input("Adres girin:", placeholder="Boş bırakılırsa mevcut konumunuz kullanılır")
@@ -113,22 +113,20 @@ if page == "Yeni Engel":
             map_data = st_folium(m, height=300, width=700)
         else:
             map_data = None
+
         if map_data and "last_clicked" in map_data and map_data["last_clicked"]:
             lat = map_data["last_clicked"]["lat"]
             lon = map_data["last_clicked"]["lng"]
             m = folium.Map(location=[lat, lon], zoom_start=15)
             folium.Marker([lat, lon], popup="Seçilen Konum").add_to(m)
 
-
         col3.info('Haritada kesin konumu tıklayın ve kaydet butonuna basın!')
         if col4.button("Engeli Kaydet", type="primary"):
             obstacle_name = st.session_state.get("obstacle_name", "")
             obstacle_height = st.session_state.get("obstacle_height", "")
 
-        # Konum girilmiş mi kontrolü
             if not lat or not lon:
                 st.toast("Lütfen haritada bir konum seçin.", icon="❌")
-            # Diğer alanlar dolu mu kontrolü
             elif not obstacle_name or not obstacle_height:
                 st.toast("Lütfen engel adı ve yüksekliğini girin.", icon="❌")
             else:
@@ -139,15 +137,14 @@ if page == "Yeni Engel":
                 except ValueError:
                     st.error("Yükseklik bir sayı olmalıdır.")
 
+# ✅ Engel Listesi Sayfası
 elif page == "Engel Listesi":
-
     try:
         df = read_obstacles()
     except Exception:
         st.warning("Engel bulunamadı. Önce yeni bir engel ekleyin.")
         df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
 
-    # Engelleri haritada göster
     if not df.empty:
         m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7)
         for _, obstacle in df.iterrows():
@@ -167,8 +164,8 @@ elif page == "Engel Listesi":
         save_all_obstacles(edited_df)
         st.toast("Değişiklikler KAYDEDİLDİ!", icon="✅")
 
+# ✅ Rota Planlayıcı Sayfası
 elif page == "Rota Planlayıcı":
-
     with st.form("route_planner_form"):
         del_from = st.text_input("Başlangıç adresini girin:")
         del_to = st.text_input("Varış adresini girin:")
@@ -181,48 +178,69 @@ elif page == "Rota Planlayıcı":
             else:
                 try:
                     vehicle_height = float(vehicle_height)
-                    directions = gmaps.directions(del_from, del_to, mode="driving")
+                    directions = gmaps.directions(
+                        del_from,
+                        del_to,
+                        mode="driving",
+                        alternatives=True
+                    )
                     if not directions:
                         st.error("Adresler arasında bir rota bulunamadı.")
                     else:
-                        steps = directions[0]['legs'][0]['steps']
-                        route_points = []
-                        for step in steps:
-                            points = googlemaps.convert.decode_polyline(step['polyline']['points'])
-                            route_points.extend([(p['lat'], p['lng']) for p in points])
-
-                        # ✅ Shapely LineString (lon, lat formatında!)
-                        route_line = LineString([(lng, lat) for lat, lng in route_points])
-
-                        buffer=10   # metre cinsinden
-
                         try:
                             df = read_obstacles()
                         except Exception:
                             st.warning("Engel bulunamadı.")
                             df = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
 
-                        obstacles_on_route = []
-                        for _, row in df.iterrows():
-                            obstacle_point = Point(row["Boylam"], row["Enlem"])
-                            distance_m = route_line.distance(obstacle_point) * 111_320  # derece → metre
-                            if distance_m <= buffer:
-                                obstacles_on_route.append(row)
+                        colors = ["blue", "green", "purple", "orange", "red"]
 
-                        if route_points:
-                            m = folium.Map(location=route_points[0], zoom_start=12)
-                            folium.PolyLine(route_points, color="blue", weight=5, opacity=0.7).add_to(m)
+                        rota_secim = st.selectbox(
+                            "Gösterilecek rota:",
+                            ["Tüm rotalar"] + [f"Alternatif Rota {i+1}" for i in range(len(directions))]
+                        )
+
+                        m = folium.Map(location=[directions[0]['legs'][0]['start_location']['lat'],
+                                                 directions[0]['legs'][0]['start_location']['lng']], zoom_start=12)
+
+                        buffer = 10  # metre
+
+                        for idx, route in enumerate(directions):
+                            steps = route['legs'][0]['steps']
+                            route_points = []
+                            for step in steps:
+                                points = googlemaps.convert.decode_polyline(step['polyline']['points'])
+                                route_points.extend([(p['lat'], p['lng']) for p in points])
+
+                            route_line = LineString([(lng, lat) for lat, lng in route_points])
+
+                            obstacles_on_route = []
+                            for _, row in df.iterrows():
+                                obstacle_point = Point(row["Boylam"], row["Enlem"])
+                                distance_m = route_line.distance(obstacle_point) * 111_320
+                                if distance_m <= buffer:
+                                    obstacles_on_route.append(row)
+
+                            if rota_secim != "Tüm rotalar" and rota_secim != f"Alternatif Rota {idx+1}":
+                                continue
+
+                            distance = route['legs'][0]['distance']['text']
+                            duration = route['legs'][0]['duration']['text']
+                            st.info(f"Alternatif Rota {idx+1} → Mesafe: {distance}, Süre: {duration}")
+
+                            color = colors[idx % len(colors)]
+                            folium.PolyLine(route_points, color=color, weight=5, opacity=0.7,
+                                            popup=f"Alternatif Rota {idx+1} ({distance}, {duration})").add_to(m)
 
                             for _, row in df.iterrows():
-                                color = "red" if any(
-                                    (row["Engel Adı"] == obs["Engel Adı"])
+                                color_marker = "red" if any(
+                                    row["Engel Adı"] == obs["Engel Adı"]
                                     for _, obs in pd.DataFrame(obstacles_on_route).iterrows()
                                 ) else "green"
-
                                 folium.Marker(
                                     [row["Enlem"], row["Boylam"]],
                                     popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
-                                    icon=folium.Icon(color=color)
+                                    icon=folium.Icon(color=color_marker)
                                 ).add_to(m)
 
                                 folium.Circle(
@@ -235,16 +253,17 @@ elif page == "Rota Planlayıcı":
                                     fill_opacity=0.3
                                 ).add_to(m)
 
-                            st_folium(m, height=300, width=700)
+                            if obstacles_on_route:
+                                st.warning(f"Alternatif Rota {idx+1} üzerinde engeller var:")
+                                for _, obs in pd.DataFrame(obstacles_on_route).iterrows():
+                                    if obs["Yükseklik (m)"] < vehicle_height:
+                                        st.error(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - ARACINIZDAN DÜŞÜK!")
+                                    else:
+                                        st.success(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - Güvenli")
+                            else:
+                                st.success(f"Alternatif Rota {idx+1} üzerinde engel bulunamadı.")
 
-                        if obstacles_on_route:
-                            st.warning("Rotanızda engeller tespit edildi:")
-                            for _, obs in pd.DataFrame(obstacles_on_route).iterrows():
-                                if obs["Yükseklik (m)"] < vehicle_height:
-                                    st.error(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - ARACINIZDAN DÜŞÜK!")
-                                else:
-                                    st.success(f"{obs['Engel Adı']} ({obs['Yükseklik (m)']}m) - Güvenli")
-                        else:
-                            st.success("Rotanızda engel bulunamadı.")
+                        st_folium(m, height=400, width=800)
+
                 except ValueError:
                     st.error("Araç yüksekliği bir sayı olmalıdır.")
