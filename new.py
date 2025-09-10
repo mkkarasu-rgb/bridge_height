@@ -289,118 +289,118 @@ elif page == "Rota Planlayıcı":
                         st.success("Rotalar alındı — aşağıdan bir rota seçin veya tümünü gösterin.")
                         st.rerun()
 
-    # formun hemen altında: eğer daha önce rotalar alınmışsa, göster ve seçilebilsin
-    if "route_data" in st.session_state:
-        data = st.session_state["route_data"]
-        directions = data["directions"]
-        route_points_list = data["route_points_list"]
-        route_summaries = data["route_summaries"]
-        vehicle_height_val = data["vehicle_height"]
+        # formun hemen altında: eğer daha önce rotalar alınmışsa, göster ve seçilebilsin
+        if "route_data" in st.session_state:
+            data = st.session_state["route_data"]
+            directions = data["directions"]
+            route_points_list = data["route_points_list"]
+            route_summaries = data["route_summaries"]
+            vehicle_height_val = data["vehicle_height"]
 
-        # Özet tabloyu göster
-        df_summary = pd.DataFrame(route_summaries)
-        st.markdown("### Rota Özeti")
-        st.dataframe(df_summary, use_container_width=True, hide_index=True)
+            # Özet tabloyu göster
+            df_summary = pd.DataFrame(route_summaries)
+            st.markdown("### Rota Özeti")
+            st.dataframe(df_summary, use_container_width=True, hide_index=True)
 
-        # rota seçim dropdown (form dışında, anında etki)
-        rota_options = ["Tüm rotalar"] + [f"Alternatif Rota {i+1}" for i in range(len(directions))]
-        rota_secim = st.selectbox("Gösterilecek rota:", rota_options, key="rota_secim_selector")
+            # rota seçim dropdown (form dışında, anında etki)
+            rota_options = ["Tüm rotalar"] + [f"Alternatif Rota {i+1}" for i in range(len(directions))]
+            rota_secim = st.selectbox("Gösterilecek rota:", rota_options, key="rota_secim_selector")
 
-        # haritayı oluştur
-        start_lat = directions[0]['legs'][0]['start_location']['lat']
-        start_lng = directions[0]['legs'][0]['start_location']['lng']
-        m = folium.Map(location=[start_lat, start_lng], zoom_start=12)
+            # haritayı oluştur
+            start_lat = directions[0]['legs'][0]['start_location']['lat']
+            start_lng = directions[0]['legs'][0]['start_location']['lng']
+            m = folium.Map(location=[start_lat, start_lng], zoom_start=12)
 
-        colors = ["blue", "green", "purple", "orange", "red"]
+            colors = ["blue", "green", "purple", "orange", "red"]
 
-        # hangi rotalar gösterilecek?
-        if rota_secim == "Tüm rotalar":
-            displayed_idx = list(range(len(directions)))
-        else:
-            # "Alternatif Rota N" -> extract N
-            try:
-                n = int(rota_secim.split()[-1])
-                displayed_idx = [n-1]
-            except Exception:
+            # hangi rotalar gösterilecek?
+            if rota_secim == "Tüm rotalar":
                 displayed_idx = list(range(len(directions)))
-
-        # hazırlık: shapely route_lines
-        route_lines = []
-        for rp in route_points_list:
-            if rp:
-                route_lines.append(LineString([(lng, lat) for lat, lng in rp]))
             else:
-                route_lines.append(None)
-
-        # rotaları çiz
-        for idx in displayed_idx:
-            rp = route_points_list[idx]
-            if not rp:
-                continue
-            distance_text = directions[idx]['legs'][0]['distance']['text'] if 'distance' in directions[idx]['legs'][0] else ""
-            duration_text = directions[idx]['legs'][0]['duration']['text'] if 'duration' in directions[idx]['legs'][0] else ""
-            color = colors[idx % len(colors)]
-            folium.PolyLine(rp, color=color, weight=5, opacity=0.8,
-                            popup=f"Alternatif Rota {idx+1} ({distance_text}, {duration_text})").add_to(m)
-
-        # engelleri işaretle (seçili rotalar üzerinden kontrol)
-        try:
-            df_obs = read_obstacles()
-        except Exception:
-            df_obs = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
-
-        buffer = 10  # metre
-        for _, row in df_obs.iterrows():
-            try:
-                if pd.isna(row["Enlem"]) or pd.isna(row["Boylam"]):
-                    continue
-                obstacle_point = Point(row["Boylam"], row["Enlem"])
-            except Exception:
-                continue
-
-            # bu engel seçili rotalardan herhangi birinin yakınındaysa işaretle
-            on_displayed_route = False
-            for ridx in displayed_idx:
-                rl = route_lines[ridx]
-                if rl is None:
-                    continue
+                # "Alternatif Rota N" -> extract N
                 try:
-                    distance_m = rl.distance(obstacle_point) * 111_320
-                    if distance_m <= buffer:
-                        on_displayed_route = True
-                        break
+                    n = int(rota_secim.split()[-1])
+                    displayed_idx = [n-1]
+                except Exception:
+                    displayed_idx = list(range(len(directions)))
+
+            # hazırlık: shapely route_lines
+            route_lines = []
+            for rp in route_points_list:
+                if rp:
+                    route_lines.append(LineString([(lng, lat) for lat, lng in rp]))
+                else:
+                    route_lines.append(None)
+
+            # rotaları çiz
+            for idx in displayed_idx:
+                rp = route_points_list[idx]
+                if not rp:
+                    continue
+                distance_text = directions[idx]['legs'][0]['distance']['text'] if 'distance' in directions[idx]['legs'][0] else ""
+                duration_text = directions[idx]['legs'][0]['duration']['text'] if 'duration' in directions[idx]['legs'][0] else ""
+                color = colors[idx % len(colors)]
+                folium.PolyLine(rp, color=color, weight=5, opacity=0.8,
+                                popup=f"Alternatif Rota {idx+1} ({distance_text}, {duration_text})").add_to(m)
+
+            # engelleri işaretle (seçili rotalar üzerinden kontrol)
+            try:
+                df_obs = read_obstacles()
+            except Exception:
+                df_obs = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
+
+            buffer = 10  # metre
+            for _, row in df_obs.iterrows():
+                try:
+                    if pd.isna(row["Enlem"]) or pd.isna(row["Boylam"]):
+                        continue
+                    obstacle_point = Point(row["Boylam"], row["Enlem"])
                 except Exception:
                     continue
 
-            # yükseklik kontrolü
-            is_danger = False
-            try:
-                is_danger = float(row["Yükseklik (m)"]) < vehicle_height_val
-            except Exception:
+                # bu engel seçili rotalardan herhangi birinin yakınındaysa işaretle
+                on_displayed_route = False
+                for ridx in displayed_idx:
+                    rl = route_lines[ridx]
+                    if rl is None:
+                        continue
+                    try:
+                        distance_m = rl.distance(obstacle_point) * 111_320
+                        if distance_m <= buffer:
+                            on_displayed_route = True
+                            break
+                    except Exception:
+                        continue
+
+                # yükseklik kontrolü
                 is_danger = False
+                try:
+                    is_danger = float(row["Yükseklik (m)"]) < vehicle_height_val
+                except Exception:
+                    is_danger = False
 
-            if on_displayed_route and is_danger:
-                marker_color = "red"
-            elif on_displayed_route and not is_danger:
-                marker_color = "orange"
-            else:
-                marker_color = "green"
+                if on_displayed_route and is_danger:
+                    marker_color = "red"
+                elif on_displayed_route and not is_danger:
+                    marker_color = "orange"
+                else:
+                    marker_color = "green"
 
-            folium.Marker(
-                [row["Enlem"], row["Boylam"]],
-                popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
-                icon=folium.Icon(color=marker_color)
-            ).add_to(m)
+                folium.Marker(
+                    [row["Enlem"], row["Boylam"]],
+                    popup=f"{row['Engel Adı']} ({row['Yükseklik (m)']}m)",
+                    icon=folium.Icon(color=marker_color)
+                ).add_to(m)
 
-            # radius
-            folium.Circle(
-                location=[row["Enlem"], row["Boylam"]],
-                radius=buffer,
-                color="blue",
-                weight=1,
-                fill=True,
-                fill_opacity=0.15
-            ).add_to(m)
+                # radius
+                folium.Circle(
+                    location=[row["Enlem"], row["Boylam"]],
+                    radius=buffer,
+                    color="blue",
+                    weight=1,
+                    fill=True,
+                    fill_opacity=0.15
+                ).add_to(m)
 
-        # haritayı göster
-        st_folium(m, height=500, width=900, key="route_map")
+            # haritayı göster
+            st_folium(m, height=500, width=900, key="route_map")
