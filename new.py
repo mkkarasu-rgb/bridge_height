@@ -297,7 +297,7 @@ elif page == "Rota Planlayıcı":
         vehicle_height_val = data["vehicle_height"]
 
         # Özet tabloyu göster
-        df_summary = pd.DataFrame(route_summaries)
+        df_summary = pd.DataFrame(route_summaries,hide_index=True)
         st.markdown("### Rota Özeti")
         st.dataframe(df_summary, use_container_width=True)
 
