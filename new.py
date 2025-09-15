@@ -115,7 +115,6 @@ if page == "Yeni Engel":
 
         if lat is not None and lon is not None:
             m = folium.Map(location=[lat, lon], zoom_start=15)
-            tiles='Esri.WorldImagery'
             folium.Marker([lat, lon], popup=address).add_to(m)
             m.add_child(folium.LatLngPopup())
             map_data = st_folium(m, height=400, width=700)
@@ -161,7 +160,7 @@ elif page == "Engel Listesi":
         st.toast("Değişiklikler KAYDEDİLDİ!", icon="✅")
 
     if not df.empty:
-        m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7,tiles='Esri.WorldImagery')
+        m = folium.Map(location=[df["Enlem"].mean(), df["Boylam"].mean()] if not df["Enlem"].isnull().all() else [0, 0], zoom_start=7)
         for _, obstacle in df.iterrows():
             if pd.isna(obstacle["Enlem"]) or pd.isna(obstacle["Boylam"]):
                 continue
@@ -313,7 +312,7 @@ elif page == "Rota Planlayıcı":
         # haritayı oluştur
         start_lat = directions[0]['legs'][0]['start_location']['lat']
         start_lng = directions[0]['legs'][0]['start_location']['lng']
-        m = folium.Map(location=[start_lat, start_lng], zoom_start=12,tiles='Esri.WorldImagery')
+        m = folium.Map(location=[start_lat, start_lng], zoom_start=12)
         
 
         colors = ["blue", "green", "purple", "orange", "red"]
