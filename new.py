@@ -224,7 +224,7 @@ elif page == "Rota Planlayıcı":
                             df_obs = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
 
                         # hazırlık
-                        buffer = 10  # metre
+                        buffer = 150  # metre
                         route_points_list = []
                         route_summaries = []
 
