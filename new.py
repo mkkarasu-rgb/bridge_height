@@ -353,7 +353,7 @@ elif page == "Rota Planlayıcı":
         except Exception:
             df_obs = pd.DataFrame(columns=["Engel Adı", "Yükseklik (m)", "Enlem", "Boylam"])
 
-        buffer = 10  # metre
+        buffer = 150  # metre
         for _, row in df_obs.iterrows():
             try:
                 if pd.isna(row["Enlem"]) or pd.isna(row["Boylam"]):
